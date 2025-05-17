@@ -12,29 +12,11 @@ import * as waitlistService from './services/waitlistService';
 import { Article, ArticleListItem, UserType, CreatorFormData, BusinessFormData } from './types';
 import SEO from './components/common/SEO';
 
-// Font preloading helper
+// Font preloading helper - simplified approach
 const preloadFonts = () => {
   return new Promise<void>((resolve) => {
-    // Check if document is loaded
-    if (document.readyState === 'complete') {
-      resolve();
-      return;
-    }
-
-    // Create Inter and Satoshi font preloaders
-    const interFont = new FontFace('Inter', 'url(https://fonts.gstatic.com/s/inter/v13/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuLyfAZJhjp-Ek-_EeAmM.woff2) format("woff2")');
-    
-    // Explicitly load and add the font to document.fonts
-    interFont.load()
-      .then((loadedFont) => {
-        document.fonts.add(loadedFont);
-        // Wait a little longer to ensure fonts are applied
-        setTimeout(resolve, 100);
-      })
-      .catch(() => {
-        // If loading fails, still resolve so the app continues
-        resolve();
-      });
+    // Wait a short time to allow external fonts to load
+    setTimeout(resolve, 300);
   });
 };
 

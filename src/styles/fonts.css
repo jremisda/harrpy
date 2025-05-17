@@ -1,91 +1,23 @@
-/* Inter Font */
-@font-face {
-  font-family: 'Inter';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url('/fonts/Inter-Regular.woff2') format('woff2'),
-       url('/fonts/Inter-Regular.woff') format('woff');
+/* 
+ * Font declarations removed - using Google Fonts and Fontshare CDN instead
+ * These fonts are loaded directly via link tags in the HTML head:
+ * - Inter from Google Fonts
+ * - Satoshi from Fontshare
+ *
+ * This approach is more reliable and reduces deployment complexity.
+ */
+
+/* Define font families for consistent usage */
+:root {
+  --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  --font-headline: 'Satoshi', var(--font-sans);
 }
 
-@font-face {
-  font-family: 'Inter';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url('/fonts/Inter-Medium.woff2') format('woff2'),
-       url('/fonts/Inter-Medium.woff') format('woff');
+/* Apply fallback strategy */
+.fonts-loading {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
-@font-face {
-  font-family: 'Inter';
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-  src: url('/fonts/Inter-SemiBold.woff2') format('woff2'),
-       url('/fonts/Inter-SemiBold.woff') format('woff');
-}
-
-@font-face {
-  font-family: 'Inter';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url('/fonts/Inter-Bold.woff2') format('woff2'),
-       url('/fonts/Inter-Bold.woff') format('woff');
-}
-
-@font-face {
-  font-family: 'Inter';
-  font-style: normal;
-  font-weight: 900;
-  font-display: swap;
-  src: url('/fonts/Inter-Black.woff2') format('woff2'),
-       url('/fonts/Inter-Black.woff') format('woff');
-}
-
-/* Satoshi Font */
-@font-face {
-  font-family: 'Satoshi';
-  font-style: normal;
-  font-weight: 300;
-  font-display: swap;
-  src: url('/fonts/Satoshi-Light.woff2') format('woff2'),
-       url('/fonts/Satoshi-Light.woff') format('woff');
-}
-
-@font-face {
-  font-family: 'Satoshi';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url('/fonts/Satoshi-Regular.woff2') format('woff2'),
-       url('/fonts/Satoshi-Regular.woff') format('woff');
-}
-
-@font-face {
-  font-family: 'Satoshi';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url('/fonts/Satoshi-Medium.woff2') format('woff2'),
-       url('/fonts/Satoshi-Medium.woff') format('woff');
-}
-
-@font-face {
-  font-family: 'Satoshi';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url('/fonts/Satoshi-Bold.woff2') format('woff2'),
-       url('/fonts/Satoshi-Bold.woff') format('woff');
-}
-
-@font-face {
-  font-family: 'Satoshi';
-  font-style: normal;
-  font-weight: 900;
-  font-display: swap;
-  src: url('/fonts/Satoshi-Black.woff2') format('woff2'),
-       url('/fonts/Satoshi-Black.woff') format('woff');
+.fonts-loaded {
+  font-family: var(--font-sans);
 } 

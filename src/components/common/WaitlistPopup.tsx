@@ -205,8 +205,6 @@ const WaitlistPopup: React.FC<WaitlistPopupProps> = ({
     
     if (!businessForm.websiteUrl.trim()) {
       errors.websiteUrl = 'Please enter your website URL';
-    } else if (!/^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/.test(businessForm.websiteUrl)) {
-      errors.websiteUrl = 'Please enter a valid website URL';
     }
     
     if (!businessForm.email.trim()) {
@@ -230,7 +228,13 @@ const WaitlistPopup: React.FC<WaitlistPopupProps> = ({
       }
     } else if (userType === 'business') {
       if (validateBusinessForm()) {
-        onSubmit(businessForm, userType);
+        // Ensure website URL has a protocol
+        const formData = { ...businessForm };
+        if (formData.websiteUrl && !formData.websiteUrl.match(/^https?:\/\//)) {
+          formData.websiteUrl = `https://${formData.websiteUrl}`;
+        }
+        
+        onSubmit(formData, userType);
         onClose();
       }
     }
