@@ -13,6 +13,7 @@ Harrpy is an AI-powered clinical co-pilot designed for every administrative work
 - Vite
 - TailwindCSS
 - ESLint
+- Neon PostgreSQL (for waitlist storage)
 
 ## Project Structure
 
@@ -24,6 +25,7 @@ src/
 │   ├── layout/        # Layout components like Navbar, Hero, MainContent
 │   └── sections/      # Page sections like HeroCard, MissionStatement
 ├── hooks/             # Custom React hooks
+├── services/          # Service layer (including database services)
 ├── styles/            # Global styles and CSS
 ├── types/             # TypeScript type definitions
 ├── utils/             # Utility functions
@@ -37,6 +39,7 @@ src/
 
 - Node.js 16+
 - npm or yarn
+- Neon PostgreSQL database (for waitlist feature)
 
 ### Installation
 
@@ -70,6 +73,58 @@ npm run build
 # or
 yarn build
 ```
+
+## Waitlist Feature
+
+The application includes a waitlist feature that collects user information and stores it in a Neon PostgreSQL database.
+
+### Setup Instructions
+
+1. Sign up for a free Neon database account at [neon.tech](https://neon.tech)
+2. Create a new project and get your connection string
+3. Create a `.env` file in the root of the project with the following:
+
+```
+# Neon Database connection string
+NEON_DATABASE_URL=postgresql://user:password@endpoint.neon.tech/neondb?sslmode=require
+```
+
+Replace `user:password@endpoint.neon.tech/neondb` with your actual connection details from Neon.
+
+### How It Works
+
+The waitlist feature:
+1. Collects user information through a popup form
+2. Validates the input fields
+3. Stores the data in two tables:
+   - `waitlist_creators` - for creator submissions
+   - `waitlist_businesses` - for business submissions
+
+### Tables Structure
+
+**waitlist_creators**
+- id (Primary Key)
+- first_name
+- last_name
+- email (Unique)
+- instagram
+- tiktok
+- youtube
+- x
+- about_yourself
+- created_at (Timestamp)
+
+**waitlist_businesses**
+- id (Primary Key)
+- business_name
+- website_url
+- email (Unique)
+- creator_description
+- created_at (Timestamp)
+
+### Accessing the Data
+
+You can access and manage your waitlist data through the Neon dashboard, or by connecting with any PostgreSQL client using the connection string.
 
 ## Contributing
 

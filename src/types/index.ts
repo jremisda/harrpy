@@ -77,4 +77,107 @@ export interface ButtonProps extends BaseComponentProps {
   onClick?: () => void;
   disabled?: boolean;
   children: React.ReactNode;
+}
+
+// Article and Blog types
+export interface Author {
+  id: string;
+  name: string;
+  avatar?: string;
+  bio?: string;
+  role?: string;
+  socialLinks?: {
+    twitter?: string;
+    instagram?: string;
+    linkedin?: string;
+  };
+}
+
+export interface ArticleImage {
+  url: string;
+  alt: string;
+  width?: number;
+  height?: number;
+  caption?: string;
+  credit?: string;
+}
+
+export interface ArticleTag {
+  id: string;
+  name: string;
+  slug: string;
+}
+
+export interface ArticleCategory {
+  id: string;
+  name: string;
+  slug: string;
+  description?: string;
+}
+
+export interface ArticleSEO {
+  title?: string;
+  description?: string;
+  keywords?: string[];
+  ogImage?: string;
+  canonicalUrl?: string;
+}
+
+export interface Article {
+  id: string;
+  title: string;
+  slug: string;
+  summary: string;
+  content: string; // Markdown or HTML content
+  publishedAt: string; // ISO date string
+  updatedAt?: string; // ISO date string
+  image: ArticleImage;
+  author: Author;
+  category: ArticleCategory;
+  tags: ArticleTag[];
+  readingTime: number; // In minutes
+  featured: boolean;
+  status: 'draft' | 'published' | 'archived';
+  seo?: ArticleSEO;
+  relatedArticles?: string[]; // Array of article IDs
+}
+
+export interface ArticleListItem {
+  id: string;
+  title: string;
+  slug: string;
+  summary: string;
+  publishedAt: string;
+  image: ArticleImage;
+  author: {
+    id: string;
+    name: string;
+    avatar?: string;
+  };
+  category: {
+    id: string;
+    name: string;
+    slug: string;
+  };
+  readingTime: number;
+  featured: boolean;
+}
+
+export interface ArticlesResponse {
+  articles: ArticleListItem[];
+  totalCount: number;
+  page: number;
+  pageSize: number;
+  totalPages: number;
+  hasMore: boolean;
+}
+
+export interface ArticleFilters {
+  category?: string;
+  tag?: string;
+  author?: string;
+  featured?: boolean;
+  search?: string;
+  sortBy?: 'publishedAt' | 'updatedAt' | 'title' | 'readingTime';
+  sortOrder?: 'asc' | 'desc';
 } 

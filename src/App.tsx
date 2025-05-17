@@ -8,6 +8,7 @@ import CursorTrail from './components/common/CursorTrail';
 import WaitlistPopup from './components/common/WaitlistPopup';
 import './styles/animations.css';
 import { articleService } from './services/articleService';
+import waitlistService from './services/waitlistService';
 import { Article, ArticleListItem, UserType, CreatorFormData, BusinessFormData } from './types';
 
 // Font preloading helper
@@ -361,13 +362,33 @@ function App() {
   };
   
   // Function to handle waitlist submission
-  const handleWaitlistSubmit = (data: CreatorFormData | BusinessFormData, userType: UserType) => {
+  const handleWaitlistSubmit = async (data: CreatorFormData | BusinessFormData, userType: UserType) => {
     console.log('Waitlist submission:', { data, userType });
-    setWaitlistSuccess(true);
-    setIsWaitlistOpen(false);
-    setTimeout(() => {
-      setWaitlistSuccess(false);
-    }, 5000);
+    
+    try {
+      // Initialize database tables if they don't exist yet
+      await waitlistService.initDatabase();
+      
+      // Save the submission to the database
+      const submissionId = await waitlistService.saveWaitlistSubmission(data, userType);
+      
+      if (submissionId) {
+        console.log(`Submission saved successfully with ID: ${submissionId}`);
+        setWaitlistSuccess(true);
+        setIsWaitlistOpen(false);
+        setTimeout(() => {
+          setWaitlistSuccess(false);
+        }, 5000);
+      } else {
+        console.error('Failed to save submission - no ID returned');
+        // Handle error case
+        alert('Something went wrong with your submission. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error saving waitlist submission:', error);
+      // Handle error case
+      alert('Something went wrong with your submission. Please try again.');
+    }
   };
 
   return (
