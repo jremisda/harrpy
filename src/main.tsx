@@ -6,15 +6,18 @@ import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/react';
 import App from './App.tsx';
 import './index.css';
+import { LoadingProvider } from './context/LoadingContext';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <HelmetProvider>
-      <BrowserRouter>
-        <App />
-        <Analytics />
-        <SpeedInsights />
-      </BrowserRouter>
+      <LoadingProvider>
+        <BrowserRouter>
+          <App />
+          <Analytics />
+          <SpeedInsights />
+        </BrowserRouter>
+      </LoadingProvider>
     </HelmetProvider>
   </StrictMode>
 );

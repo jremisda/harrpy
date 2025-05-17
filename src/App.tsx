@@ -6,11 +6,13 @@ import MainContent from './components/layout/MainContent';
 import NewsContent from './components/layout/NewsContent';
 import CursorTrail from './components/common/CursorTrail';
 import WaitlistPopup from './components/common/WaitlistPopup';
+import ParticleLoader from './components/common/ParticleLoader';
 import './styles/animations.css';
 import { articleService } from './services/articleService';
 import * as waitlistService from './services/waitlistService';
 import { Article, ArticleListItem, UserType, CreatorFormData, BusinessFormData } from './types';
 import SEO from './components/common/SEO';
+import { useLoading } from './context/LoadingContext';
 
 // Font preloading helper - simplified approach
 const preloadFonts = () => {
@@ -85,6 +87,8 @@ const ArticlePage: React.FC = () => {
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-black"></div>
       </div>
     );
+    // Note: We're using a simpler loading indicator here since the ParticleLoader
+    // is better suited for full-page loading at the app level
   }
 
   if (!article) {
@@ -304,6 +308,7 @@ const ArticlePage: React.FC = () => {
  */
 function App() {
   const [fontsLoaded, setFontsLoaded] = useState(false);
+  const [pageLoading, setPageLoading] = useState(true);
   const navigate = useNavigate();
   const location = useLocation();
   const isMainView = location.pathname === '/' || location.pathname === '';
@@ -318,6 +323,10 @@ function App() {
   useEffect(() => {
     preloadFonts().then(() => {
       setFontsLoaded(true);
+      // Keep loading animation visible for a bit longer for visual effect
+      setTimeout(() => {
+        setPageLoading(false);
+      }, 1500);
     });
   }, []);
 
@@ -383,6 +392,9 @@ function App() {
 
   return (
     <div className={`min-h-screen flex flex-col bg-[#FFF5E9] font-sans overflow-x-hidden ${fontsLoaded ? 'fonts-loaded' : 'fonts-loading'}`}>
+      {/* Loading animation */}
+      <ParticleLoader isLoading={pageLoading} />
+      
       {/* Custom cursor with swirl trail effect */}
       <CursorTrail />
       
