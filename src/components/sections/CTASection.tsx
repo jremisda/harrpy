@@ -55,6 +55,8 @@ export const CTASection: React.FC<CTASectionProps> = ({ onEmailSubmit }) => {
             <form onSubmit={handleSubmit} className="relative">
               <input
                 type="email"
+                id="cta-email"
+                name="email"
                 placeholder="Enter your email to get chosen"
                 className={`w-full px-6 py-4 rounded-[8px] bg-[#FFF5E9] text-black placeholder-black/60 border ${error ? 'border-black/50 ring-1 ring-black/30' : 'border-black/20'} focus:outline-none focus:border-black pr-[140px]`}
                 value={email}

@@ -90,6 +90,8 @@ export const HeroCard: React.FC<HeroCardProps> = ({ onEmailSubmit, onOpenWaitlis
             <form onSubmit={handleSubmit} className="relative">
               <input
                 type="email"
+                id="hero-email"
+                name="email"
                 placeholder="Enter your email to get chosen"
                 className={`w-full px-6 py-4 rounded-[8px] bg-white/20 backdrop-blur-sm text-white placeholder-white/70 border ${error ? 'border-white/50' : 'border-white/30'} focus:outline-none pr-[140px]`}
                 value={email}
