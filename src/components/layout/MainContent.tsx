@@ -2,6 +2,7 @@ import React from 'react';
 import { HeroCard } from '../sections/HeroCard';
 import { MissionStatement } from '../sections/MissionStatement';
 import { EarlyAccessBenefits } from '../sections/EarlyAccessBenefits';
+import SEO from '../common/SEO';
 
 interface MainContentProps {
   onEmailSubmit: (email: string) => void;
@@ -11,6 +12,11 @@ interface MainContentProps {
 export const MainContent: React.FC<MainContentProps> = ({ onEmailSubmit, onOpenWaitlist }) => {
   return (
     <div className="w-full min-h-screen overflow-x-hidden">
+      <SEO
+        title="Harrpy | Swipe. Match. Collab"
+        description="Connect with verified creators and local businesses through swipe-to-match collabs. Trusted, fast, and BS-free. Join the waitlist now."
+      />
+      
       <HeroCard onEmailSubmit={onEmailSubmit} onOpenWaitlist={onOpenWaitlist} />
       
       <section id="early-access">

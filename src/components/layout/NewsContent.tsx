@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { ArticleCategory } from '../../types';
 import NewsArticles from '../sections/NewsArticles';
 import NewsCategories from '../sections/NewsCategories';
+import SEO from '../common/SEO';
 
 export const NewsContent: React.FC = () => {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -65,6 +66,11 @@ export const NewsContent: React.FC = () => {
 
   return (
     <div className={`w-full min-h-screen overflow-x-hidden transition-all duration-700 ease-out ${isLoaded ? 'opacity-100' : 'opacity-0'}`}>
+      <SEO
+        title="From the Verified | Harrpy News"
+        description="The latest from Harrpy. Real stories from inside the scene. No noise. Just what matters."
+      />
+      
       <div className="pt-16 px-6 md:px-12 lg:px-24 overflow-hidden">
         <h1 
           ref={headingRef}

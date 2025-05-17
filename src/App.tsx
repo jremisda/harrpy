@@ -10,6 +10,7 @@ import './styles/animations.css';
 import { articleService } from './services/articleService';
 import * as waitlistService from './services/waitlistService';
 import { Article, ArticleListItem, UserType, CreatorFormData, BusinessFormData } from './types';
+import SEO from './components/common/SEO';
 
 // Font preloading helper
 const preloadFonts = () => {
@@ -121,6 +122,13 @@ const ArticlePage: React.FC = () => {
 
   return (
     <>
+      <SEO
+        title={article.seo?.title || article.title}
+        description={article.seo?.description || article.summary}
+        ogImage={article.image.url}
+        canonical={`${window.location.origin}/articles/${article.slug}`}
+      />
+      
       <div className="pt-8 px-6 md:px-12 lg:px-24 pb-12">
         <div className="max-w-4xl mx-auto">
           {/* Back button */}
