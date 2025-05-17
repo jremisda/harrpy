@@ -326,7 +326,7 @@ function App() {
       // Show loading animation for a reasonable amount of time
       setTimeout(() => {
         setPageLoading(false);
-      }, 3000);
+      }, 1500);
     });
   }, []);
 
