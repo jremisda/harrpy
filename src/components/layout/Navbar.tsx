@@ -22,12 +22,11 @@ export const Navbar: React.FC = () => {
             }}
           >
             <div className="h-12 md:h-16 w-auto mr-0.5 md:mr-1">
-              <OptimizedImage 
+              <img 
                 src="/images/harrpy-logo.png" 
                 alt="Harrpy Logo" 
-                eager={true} // Logo is critical, load it eagerly
-                placeholderColor="#f4e9db"
-                style={{ height: '100%', width: 'auto' }}
+                className="h-full w-auto"
+                loading="eager"
               />
             </div>
             <div className="text-2xl md:text-3xl font-bold font-headline">Harrpy</div>

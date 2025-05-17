@@ -34,6 +34,13 @@ const CursorTrail: React.FC = () => {
   const primaryColor = useMemo(() => '#F3A146', []); // Sunset Gold
   const secondaryColor = useMemo(() => '#6FA5EE', []); // Creator Blue
   
+  // Reset cursor effects
+  const resetCursorEffects = useCallback(() => {
+    setVelocity(0);
+    setIsMoving(false);
+    setTrailPoints([]);
+  }, []);
+  
   // Calculate velocity based on mouse movement
   const calculateVelocity = useCallback((x: number, y: number) => {
     const dx = x - lastMousePos.x;
@@ -52,7 +59,9 @@ const CursorTrail: React.FC = () => {
     
     // Calculate velocity
     const newVelocity = calculateVelocity(clientX, clientY);
-    setVelocity(newVelocity);
+    // Cap the velocity to prevent huge swirls after tab switching
+    const cappedVelocity = Math.min(newVelocity, 100);
+    setVelocity(cappedVelocity);
     setLastMousePos({ x: clientX, y: clientY });
     
     // Set cursor position
@@ -66,16 +75,17 @@ const CursorTrail: React.FC = () => {
     
     // Reduce particle generation for better performance
     // Only generate particles based on velocity or at regular intervals (every 4th move)
-    if (nextId % 4 === 0 || newVelocity > 35) {
-      const size = Math.max(20, Math.min(50, 20 + newVelocity * 0.5));
+    if (nextId % 4 === 0 || cappedVelocity > 35) {
+      // Cap the size to prevent huge swirls
+      const size = Math.max(20, Math.min(50, 20 + cappedVelocity * 0.5));
       const newPoint: TrailPoint = {
         x: clientX,
         y: clientY,
         size,
         color: Math.random() >= 0.5 ? secondaryColor : primaryColor, // Exactly 50/50 distribution
-        opacity: Math.min(0.95, 0.65 + newVelocity * 0.005), // Increased opacity to 65% base, 95% max
+        opacity: Math.min(0.95, 0.65 + cappedVelocity * 0.005), // Increased opacity to 65% base, 95% max
         id: nextId,
-        animationDuration: Math.max(0.8, 1.5 - newVelocity * 0.005),
+        animationDuration: Math.max(0.8, 1.5 - cappedVelocity * 0.005),
         depth: 0, // Remove random depth for better performance
         distortionLevel: Math.min(5, Math.random() * 5), // Reduce distortion level
         timestamp: Date.now()
@@ -104,20 +114,42 @@ const CursorTrail: React.FC = () => {
   const handleMouseEnter = useCallback(() => {
     setCursorVisible(true);
   }, []);
+  
+  // Handle visibility change - reset cursor effects when page regains focus
+  const handleVisibilityChange = useCallback(() => {
+    if (document.visibilityState === 'visible') {
+      resetCursorEffects();
+    }
+  }, [resetCursorEffects]);
+  
+  // Handle window blur/focus events
+  const handleWindowBlur = useCallback(() => {
+    resetCursorEffects();
+  }, [resetCursorEffects]);
+  
+  const handleWindowFocus = useCallback(() => {
+    resetCursorEffects();
+  }, [resetCursorEffects]);
 
   // Set up event listeners
   useEffect(() => {
     document.addEventListener('mousemove', handleMouseMove, { passive: true });
     document.addEventListener('mouseleave', handleMouseLeave);
     document.addEventListener('mouseenter', handleMouseEnter);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    window.addEventListener('blur', handleWindowBlur);
+    window.addEventListener('focus', handleWindowFocus);
     
     return () => {
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseleave', handleMouseLeave);
       document.removeEventListener('mouseenter', handleMouseEnter);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      window.removeEventListener('blur', handleWindowBlur);
+      window.removeEventListener('focus', handleWindowFocus);
       clearTimeout(window.moveTimeout);
     };
-  }, [handleMouseEnter, handleMouseLeave, handleMouseMove]);
+  }, [handleMouseEnter, handleMouseLeave, handleMouseMove, handleVisibilityChange, handleWindowBlur, handleWindowFocus]);
 
   // Clean up expired trail points
   useEffect(() => {
