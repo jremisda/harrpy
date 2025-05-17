@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Button from '../common/Button';
 import Toast from '../common/Toast';
+import OptimizedImage from '../common/OptimizedImage';
 
 interface HeroCardProps {
   onEmailSubmit: (email: string) => void;
@@ -55,10 +56,11 @@ export const HeroCard: React.FC<HeroCardProps> = ({ onEmailSubmit }) => {
       <div className="relative w-full h-[350px] md:h-[400px] rounded-[32px] overflow-hidden">
         {/* Image background */}
         <div className="absolute inset-0 w-full h-full">
-          <img 
+          <OptimizedImage 
             src="/images/hero-background.png" 
-            alt="" 
-            className="w-full h-full object-cover"
+            alt="Hero background"
+            eager={true} // This is above the fold, so load eagerly
+            placeholderColor="#f4e9db"
           />
           {/* Very subtle overlay */}
           <div className="absolute inset-0 bg-black/10"></div>

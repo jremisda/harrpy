@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Button from '../common/Button';
+import OptimizedImage from '../common/OptimizedImage';
 
 export const EarlyAccessBenefits: React.FC = () => {
   const [activeView, setActiveView] = useState<'creators' | 'businesses'>('creators');
@@ -33,10 +34,10 @@ export const EarlyAccessBenefits: React.FC = () => {
                 activeView === 'creators' ? 'opacity-100' : 'opacity-0'
               }`}
             >
-              <img 
+              <OptimizedImage 
                 src="/images/early-access-background.png" 
-                alt="" 
-                className="w-full h-full object-cover"
+                alt="Early access background" 
+                placeholderColor="#242424"
               />
             </div>
             
@@ -46,10 +47,10 @@ export const EarlyAccessBenefits: React.FC = () => {
                 activeView === 'businesses' ? 'opacity-100' : 'opacity-0'
               }`}
             >
-              <img 
+              <OptimizedImage 
                 src="/images/business-button-bg.png" 
-                alt="" 
-                className="w-full h-full object-cover"
+                alt="Business background" 
+                placeholderColor="#242424"
               />
             </div>
           </div>

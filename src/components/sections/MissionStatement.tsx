@@ -1,4 +1,5 @@
 import React from 'react';
+import OptimizedImage from '../common/OptimizedImage';
 
 export const MissionStatement: React.FC = () => {
   return (
@@ -29,10 +30,10 @@ export const MissionStatement: React.FC = () => {
           {/* Right column - Image */}
           <div className="w-full md:w-1/2 h-[400px] md:h-[500px]">
             <div className="w-full h-full rounded-[24px] overflow-hidden">
-              <img 
+              <OptimizedImage 
                 src="/images/bali-bg.png" 
                 alt="Bali creative scene" 
-                className="w-full h-full object-cover"
+                placeholderColor="#e9dbcd"
               />
             </div>
           </div>

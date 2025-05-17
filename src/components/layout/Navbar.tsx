@@ -1,4 +1,5 @@
 import React from 'react';
+import OptimizedImage from '../common/OptimizedImage';
 
 export const Navbar: React.FC = () => {
   const scrollToTop = () => {
@@ -20,11 +21,15 @@ export const Navbar: React.FC = () => {
               scrollToTop();
             }}
           >
-            <img 
-              src="/images/harrpy-logo.png" 
-              alt="Harrpy Logo" 
-              className="h-12 md:h-16 w-auto mr-0.5 md:mr-1"
-            />
+            <div className="h-12 md:h-16 w-auto mr-0.5 md:mr-1">
+              <OptimizedImage 
+                src="/images/harrpy-logo.png" 
+                alt="Harrpy Logo" 
+                eager={true} // Logo is critical, load it eagerly
+                placeholderColor="#f4e9db"
+                style={{ height: '100%', width: 'auto' }}
+              />
+            </div>
             <div className="text-2xl md:text-3xl font-bold font-headline">Harrpy</div>
           </a>
           <div className="space-x-8">
