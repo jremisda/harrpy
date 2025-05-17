@@ -5,9 +5,10 @@ import OptimizedImage from '../common/OptimizedImage';
 
 interface HeroCardProps {
   onEmailSubmit: (email: string) => void;
+  onOpenWaitlist?: () => void;
 }
 
-export const HeroCard: React.FC<HeroCardProps> = ({ onEmailSubmit }) => {
+export const HeroCard: React.FC<HeroCardProps> = ({ onEmailSubmit, onOpenWaitlist }) => {
   const [animated, setAnimated] = useState(false);
   const [email, setEmail] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -51,6 +52,16 @@ export const HeroCard: React.FC<HeroCardProps> = ({ onEmailSubmit }) => {
     setEmail(''); // Clear the input
   };
 
+  const handleJoinWaitlist = () => {
+    if (onOpenWaitlist) {
+      onOpenWaitlist();
+      return;
+    }
+
+    // Fallback to form submission if no direct waitlist opener provided
+    handleSubmit(new Event('submit') as unknown as React.FormEvent);
+  };
+
   return (
     <div className="px-6 md:px-12 lg:px-24 pb-12">
       <div className="relative w-full h-[350px] md:h-[400px] rounded-[32px] overflow-hidden">
@@ -87,7 +98,8 @@ export const HeroCard: React.FC<HeroCardProps> = ({ onEmailSubmit }) => {
               />
               <div className="absolute right-2 top-1/2 transform -translate-y-1/2">
                 <button
-                  type="submit"
+                  type="button"
+                  onClick={handleJoinWaitlist}
                   className="px-6 py-3 bg-transparent text-black font-medium rounded-[4px] border border-black shadow-[0_0_15px_rgba(0,0,0,0.2)] hover:bg-black/5 transition-colors duration-300 ease-in-out whitespace-nowrap"
                 >
                   Join Waitlist

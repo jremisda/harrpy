@@ -1,36 +1,17 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { HeroCard } from '../sections/HeroCard';
 import { MissionStatement } from '../sections/MissionStatement';
 import { EarlyAccessBenefits } from '../sections/EarlyAccessBenefits';
-import { CTASection } from '../sections/CTASection';
-import WaitlistPopup from '../common/WaitlistPopup';
-import { UserType, CreatorFormData, BusinessFormData } from '../../types';
 
-export const MainContent: React.FC = () => {
-  const [isPopupOpen, setIsPopupOpen] = useState(false);
-  const [submittedEmail, setSubmittedEmail] = useState('');
-  const [waitlistSuccess, setWaitlistSuccess] = useState(false);
+interface MainContentProps {
+  onEmailSubmit: (email: string) => void;
+  onOpenWaitlist?: () => void;
+}
 
-  const handleEmailSubmit = (email: string) => {
-    setSubmittedEmail(email);
-    setIsPopupOpen(true);
-  };
-
-  const handlePopupClose = () => {
-    setIsPopupOpen(false);
-  };
-
-  const handleWaitlistSubmit = (data: CreatorFormData | BusinessFormData, userType: UserType) => {
-    console.log('Waitlist submission:', { data, userType });
-    setWaitlistSuccess(true);
-    setTimeout(() => {
-      setWaitlistSuccess(false);
-    }, 5000);
-  };
-
+export const MainContent: React.FC<MainContentProps> = ({ onEmailSubmit, onOpenWaitlist }) => {
   return (
-    <div className="w-full">
-      <HeroCard onEmailSubmit={handleEmailSubmit} />
+    <div className="w-full min-h-screen overflow-x-hidden">
+      <HeroCard onEmailSubmit={onEmailSubmit} onOpenWaitlist={onOpenWaitlist} />
       
       <section id="early-access">
         <EarlyAccessBenefits />
@@ -39,35 +20,24 @@ export const MainContent: React.FC = () => {
       <section id="mission">
         <MissionStatement />
       </section>
-      
-      <section id="contact">
-        <CTASection onEmailSubmit={handleEmailSubmit} />
-      </section>
 
-      {/* Waitlist Popup */}
-      <WaitlistPopup 
-        isOpen={isPopupOpen}
-        onClose={handlePopupClose}
-        initialEmail={submittedEmail}
-        onSubmit={handleWaitlistSubmit}
-      />
-
-      {/* Success message */}
-      {waitlistSuccess && (
-        <div className="fixed bottom-8 right-8 bg-[#FFF5E9] border border-black/20 shadow-lg rounded-lg p-4 z-50 animate-fade-in">
-          <div className="flex items-center space-x-3">
-            <div className="bg-green-100 p-2 rounded-full">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-              </svg>
-            </div>
-            <div>
-              <p className="text-black font-medium">Your submission has been received!</p>
-              <p className="text-black/60 text-sm">We'll reach out if you're selected. Good luck!</p>
-            </div>
+      {/* Footer */}
+      <footer className="w-full px-6 md:px-12 lg:px-24 py-8 mt-4">
+        <div className="h-0.5 w-full bg-[#121212] mb-6"></div>
+        <div className="flex flex-col md:flex-row justify-between items-center pt-0 relative z-10">
+          <div className="flex items-center mb-4 md:mb-0">
+            <img 
+              src="/images/harrpy-logo.png" 
+              alt="Harrpy Logo" 
+              className="h-10 w-auto mr-2"
+            />
+            <p className="text-black font-medium">Harrpy</p>
+          </div>
+          <div className="text-sm text-black/60">
+            © {new Date().getFullYear()} Harrpy. All rights reserved.
           </div>
         </div>
-      )}
+      </footer>
     </div>
   );
 };

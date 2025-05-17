@@ -276,14 +276,14 @@ const WaitlistPopup: React.FC<WaitlistPopupProps> = ({
               <div className="grid grid-cols-1 gap-5">
                 <button
                   onClick={() => handleUserTypeSelect('creator')}
-                  className="px-6 py-8 bg-white/60 backdrop-blur-sm text-center text-black font-medium rounded-[12px] border border-black/20 shadow-sm hover:shadow-[0_0_15px_rgba(0,0,0,0.1)] hover:border-black/40 transition-all duration-300 ease-in-out"
+                  className="px-6 py-8 bg-white/40 backdrop-blur-md text-center text-black font-medium rounded-[12px] border border-black shadow-[0_0_15px_rgba(0,0,0,0.2)] hover:bg-black/5 transition-colors duration-300 ease-in-out"
                 >
                   <span className="text-xl">I'm a Creator</span>
                 </button>
                 
                 <button
                   onClick={() => handleUserTypeSelect('business')}
-                  className="px-6 py-8 bg-white/60 backdrop-blur-sm text-center text-black font-medium rounded-[12px] border border-black/20 shadow-sm hover:shadow-[0_0_15px_rgba(0,0,0,0.1)] hover:border-black/40 transition-all duration-300 ease-in-out"
+                  className="px-6 py-8 bg-white/40 backdrop-blur-md text-center text-black font-medium rounded-[12px] border border-black shadow-[0_0_15px_rgba(0,0,0,0.2)] hover:bg-black/5 transition-colors duration-300 ease-in-out"
                 >
                   <span className="text-xl">I'm a Business or Agency</span>
                 </button>
@@ -531,7 +531,14 @@ const WaitlistPopup: React.FC<WaitlistPopupProps> = ({
         
         {/* Footer with copyright */}
         <div className="px-8 py-4 border-t border-black/10 mt-auto flex-shrink-0">
-          <p className="text-center text-black/40 text-sm font-medium">Harrpy 2025</p>
+          <div className="flex items-center justify-center">
+            <img 
+              src="/images/harrpy-logo.png" 
+              alt="Harrpy Logo" 
+              className="h-5 w-auto mr-1.5"
+            />
+            <p className="text-center text-black/40 text-sm font-medium">{new Date().getFullYear()}</p>
+          </div>
         </div>
       </div>
     </div>
