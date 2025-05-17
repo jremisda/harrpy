@@ -6,7 +6,7 @@ import MainContent from './components/layout/MainContent';
 import NewsContent from './components/layout/NewsContent';
 import CursorTrail from './components/common/CursorTrail';
 import WaitlistPopup from './components/common/WaitlistPopup';
-import ParticleLoader from './components/common/ParticleLoader';
+import GlassyLoader from './components/common/GlassyLoader';
 import './styles/animations.css';
 import { articleService } from './services/articleService';
 import * as waitlistService from './services/waitlistService';
@@ -323,10 +323,10 @@ function App() {
   useEffect(() => {
     preloadFonts().then(() => {
       setFontsLoaded(true);
-      // Keep loading animation visible for a bit longer for visual effect
+      // Show loading animation for a reasonable amount of time
       setTimeout(() => {
         setPageLoading(false);
-      }, 1500);
+      }, 3000);
     });
   }, []);
 
@@ -391,9 +391,9 @@ function App() {
   };
 
   return (
-    <div className={`min-h-screen flex flex-col bg-[#FFF5E9] font-sans overflow-x-hidden ${fontsLoaded ? 'fonts-loaded' : 'fonts-loading'}`}>
+    <div className={`min-h-screen flex flex-col bg-[#FFF5E9] font-sans overflow-x-hidden ${fontsLoaded ? 'fonts-loaded' : 'fonts-loading'} ${pageLoading ? 'animations-paused' : 'animations-enabled'}`}>
       {/* Loading animation */}
-      <ParticleLoader isLoading={pageLoading} />
+      <GlassyLoader isLoading={pageLoading} />
       
       {/* Custom cursor with swirl trail effect */}
       <CursorTrail />

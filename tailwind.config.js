@@ -29,6 +29,50 @@ export default {
           'sans-serif',
         ],
       },
+      animation: {
+        'spin-slow': 'spin 3s linear infinite',
+        'reverse-spin': 'reverse-spin 8s linear infinite',
+        'pulse': 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        'gentle-pulse': 'gentle-pulse 3s ease-in-out infinite',
+        'logo-spin': 'logo-spin 4s ease-in-out infinite',
+      },
+      keyframes: {
+        'reverse-spin': {
+          from: {
+            transform: 'rotate(360deg)'
+          },
+          to: {
+            transform: 'rotate(0deg)'
+          },
+        },
+        'gentle-pulse': {
+          '0%, 100%': { 
+            opacity: 1,
+            transform: 'scale(1)'
+          },
+          '50%': { 
+            opacity: 0.8,
+            transform: 'scale(0.95)'
+          },
+        },
+        'logo-spin': {
+          '0%': { 
+            transform: 'rotate(0deg) scale(1)'
+          },
+          '25%': {
+            transform: 'rotate(90deg) scale(0.95)'
+          },
+          '50%': { 
+            transform: 'rotate(180deg) scale(1)'
+          },
+          '75%': {
+            transform: 'rotate(270deg) scale(0.95)'
+          },
+          '100%': { 
+            transform: 'rotate(360deg) scale(1)'
+          }
+        },
+      },
       colors: {
         primary: {
           50: '#f5f3ff',

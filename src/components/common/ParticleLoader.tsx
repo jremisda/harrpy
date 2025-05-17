@@ -22,8 +22,8 @@ const ParticleLoader: React.FC<ParticleLoaderProps> = ({ isLoading }) => {
     updateCanvasSize();
     window.addEventListener('resize', updateCanvasSize);
 
-    // Define particles
-    const particleCount = 300;
+    // Define particles - more particles for better text definition
+    const particleCount = 600;
     const particles: Particle[] = [];
     
     // Brand colors from tailwind config
@@ -42,138 +42,179 @@ const ParticleLoader: React.FC<ParticleLoaderProps> = ({ isLoading }) => {
     // All colors to use
     const colors = [...primaryColors, ...accentColors];
     
-    // Target positions to form "Harrpy" text
+    // Define text to display
     const text = 'HARRPY';
-    const textSize = Math.min(canvas.width / 8, 80);
-    ctx.font = `bold ${textSize}px Inter, sans-serif`;
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
     
-    const textWidth = ctx.measureText(text).width;
-    const textX = canvas.width / 2;
-    const textY = canvas.height / 2;
+    // Pre-defined letter paths (simplified coordinates for each letter)
+    // These are coordinates that form the shape of each letter
+    const letterCoordinates: Record<string, [number, number][]> = {
+      'H': [
+        [-30, -40], [-30, -20], [-30, 0], [-30, 20], [-30, 40], // left vertical line
+        [-30, 0], [-20, 0], [-10, 0], [0, 0], [10, 0], [20, 0], [30, 0], // horizontal line
+        [30, -40], [30, -20], [30, 0], [30, 20], [30, 40], // right vertical line
+      ],
+      'A': [
+        [-30, 40], [-20, 20], [-10, 0], [-5, -20], [0, -40], // left diagonal
+        [5, -20], [10, 0], [20, 20], [30, 40], // right diagonal
+        [-15, 10], [-5, 10], [5, 10], [15, 10], // horizontal bar
+      ],
+      'R': [
+        [-30, -40], [-30, -20], [-30, 0], [-30, 20], [-30, 40], // left vertical line
+        [-30, -40], [-20, -40], [-10, -40], [0, -40], [10, -40], [20, -35], // top horizontal
+        [25, -30], [30, -20], [30, -10], [25, 0], [20, 5], // curve down
+        [10, 5], [0, 5], [-10, 5], [-20, 5], [-30, 5], // middle horizontal
+        [0, 5], [10, 15], [20, 25], [30, 40], // right diagonal down
+      ],
+      'P': [
+        [-30, -40], [-30, -20], [-30, 0], [-30, 20], [-30, 40], // left vertical line
+        [-30, -40], [-20, -40], [-10, -40], [0, -40], [10, -40], [20, -35], // top horizontal
+        [25, -30], [30, -20], [30, -10], [25, 0], [20, 5], // curve
+        [10, 5], [0, 5], [-10, 5], [-20, 5], [-30, 5], // bottom horizontal
+      ],
+      'Y': [
+        [-30, -40], [-20, -30], [-10, -20], [0, -10], // top left diagonal
+        [10, -20], [20, -30], [30, -40], // top right diagonal
+        [0, -10], [0, 0], [0, 10], [0, 20], [0, 40], // vertical line
+      ],
+    };
     
-    // Get pixel positions from text
-    const textPositions: {x: number, y: number}[] = [];
-    
-    // Draw the text (temporarily)
-    ctx.fillText(text, textX, textY);
-    
-    // Sample points from the text
-    const imageData = ctx.getImageData(
-      textX - textWidth / 2 - 10, 
-      textY - textSize / 2 - 10,
-      textWidth + 20,
-      textSize + 20
-    );
-    
-    // Clear the text
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
-    // Sample points from the text at regular intervals
-    const sampleInterval = 4; // Adjust for more or fewer particles
-    for (let y = 0; y < imageData.height; y += sampleInterval) {
-      for (let x = 0; x < imageData.width; x += sampleInterval) {
-        const idx = (y * imageData.width + x) * 4;
-        // If pixel has any opacity, use it as a position
-        if (imageData.data[idx + 3] > 0) {
-          textPositions.push({
-            x: textX - textWidth / 2 + x,
-            y: textY - textSize / 2 + y
-          });
+    // Calculate actual positions for letters in the text
+    const getTextPositions = () => {
+      const positions: [number, number][] = [];
+      const letterWidth = 70; // Width of each letter
+      const totalWidth = text.length * letterWidth;
+      const startX = canvas.width / 2 - totalWidth / 2 + letterWidth / 2;
+      const centerY = canvas.height / 2;
+      
+      // For each letter in the text
+      for (let i = 0; i < text.length; i++) {
+        const letter = text[i];
+        const letterX = startX + i * letterWidth;
+        
+        // Get the coordinates for this letter
+        if (letterCoordinates[letter]) {
+          for (const [x, y] of letterCoordinates[letter]) {
+            positions.push([letterX + x, centerY + y]);
+          }
+        } else {
+          // Fallback for letters not defined - just make a grid of points
+          for (let x = -30; x <= 30; x += 10) {
+            for (let y = -40; y <= 40; y += 10) {
+              positions.push([letterX + x, centerY + y]);
+            }
+          }
         }
       }
-    }
+      
+      return positions;
+    };
     
     // Class to represent a particle
     class Particle {
       x: number;
       y: number;
       size: number;
+      baseSize: number;
       color: string;
       targetX: number;
       targetY: number;
-      velocity: number;
-      angle: number;
-      gravity: number;
+      vx: number;
+      vy: number;
       friction: number;
-      hasTarget: boolean;
+      inPosition: boolean;
+      phase: 'random' | 'approaching' | 'positioned';
       
       constructor() {
-        // Start from random position around the screen
+        // Start from random position
         this.x = Math.random() * canvas.width;
         this.y = Math.random() * canvas.height;
         
-        // Random size
-        this.size = Math.random() * 3 + 1;
+        // Size properties
+        this.baseSize = Math.random() * 3 + 3;
+        this.size = this.baseSize;
         
         // Random color from our palette
         this.color = colors[Math.floor(Math.random() * colors.length)];
         
-        // Will be assigned target position later if needed
+        // Target position (set later)
         this.targetX = 0;
         this.targetY = 0;
         
-        // Physics properties
-        this.velocity = Math.random() * 2 + 0.5;
-        this.angle = Math.random() * Math.PI * 2;
-        this.gravity = 0.03;
+        // Velocity components
+        this.vx = (Math.random() - 0.5) * 2;
+        this.vy = (Math.random() - 0.5) * 2;
+        
+        // Physics
         this.friction = 0.95;
         
-        // Flag to indicate if this particle has a target position
-        this.hasTarget = false;
+        // State flags
+        this.inPosition = false;
+        this.phase = 'random';
       }
       
       update() {
-        // If we have a target, move towards it
-        if (this.hasTarget) {
-          // Calculate direction to target
+        if (this.phase === 'random') {
+          // Random movement in initial phase
+          this.x += this.vx;
+          this.y += this.vy;
+          
+          // Boundary check and bounce
+          if (this.x < 0 || this.x > canvas.width) {
+            this.vx *= -1;
+          }
+          if (this.y < 0 || this.y > canvas.height) {
+            this.vy *= -1;
+          }
+          
+          // Slowly reduce velocity
+          this.vx *= 0.99;
+          this.vy *= 0.99;
+          
+        } else if (this.phase === 'approaching') {
+          // Calculate distance to target
           const dx = this.targetX - this.x;
           const dy = this.targetY - this.y;
           const distance = Math.sqrt(dx * dx + dy * dy);
           
-          // If we're close enough to target, slow down
-          if (distance < 50) {
-            this.velocity *= 0.9;
-          }
+          // Move towards target at a speed proportional to distance
+          // but capped to ensure smooth movement
+          const speed = Math.min(distance * 0.05, 3);
           
-          // Move towards target
-          if (distance > 0.1) {
-            this.x += (dx / distance) * this.velocity;
-            this.y += (dy / distance) * this.velocity;
+          if (distance > 0.5) {
+            this.x += (dx / distance) * speed;
+            this.y += (dy / distance) * speed;
+          } else {
+            // Arrived at target position
+            this.phase = 'positioned';
+            this.inPosition = true;
+            this.size = this.baseSize * 1.5; // Grow a bit when positioned
           }
         } else {
-          // Random movement for particles without targets
-          this.x += Math.cos(this.angle) * this.velocity;
-          this.y += Math.sin(this.angle) * this.velocity + this.gravity;
+          // Small random movement when in final position
+          this.x += (Math.random() - 0.5) * 0.5;
+          this.y += (Math.random() - 0.5) * 0.5;
           
-          // Slightly change angle for organic movement
-          this.angle += (Math.random() - 0.5) * 0.2;
-          
-          // Bounce off edges
-          if (this.x < 0 || this.x > canvas.width) {
-            this.angle = Math.PI - this.angle;
-          }
-          if (this.y < 0 || this.y > canvas.height) {
-            this.angle = -this.angle;
-            this.y = this.y < 0 ? 0 : canvas.height;
-            this.velocity *= this.friction;
-          }
+          // Stay close to target
+          this.x = this.x * 0.9 + this.targetX * 0.1;
+          this.y = this.y * 0.9 + this.targetY * 0.1;
         }
       }
       
       draw() {
         if (!ctx) return;
+        
+        ctx.globalAlpha = this.phase === 'positioned' ? 1 : 0.8;
         ctx.fillStyle = this.color;
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
         ctx.fill();
+        ctx.globalAlpha = 1;
       }
       
       assignTarget(x: number, y: number) {
         this.targetX = x;
         this.targetY = y;
-        this.hasTarget = true;
+        this.phase = 'approaching';
       }
     }
     
@@ -182,32 +223,41 @@ const ParticleLoader: React.FC<ParticleLoaderProps> = ({ isLoading }) => {
       particles.push(new Particle());
     }
     
-    // Assign target positions to particles
-    const assignTargets = () => {
-      // First, make sure we don't assign more particles than targets
-      const particlesToAssign = Math.min(particles.length, textPositions.length);
-      
-      // Shuffle particles to get a random selection
-      const shuffledParticles = [...particles].sort(() => Math.random() - 0.5);
-      
-      // Assign targets to the first N particles
-      for (let i = 0; i < particlesToAssign; i++) {
-        shuffledParticles[i].assignTarget(
-          textPositions[i].x + (Math.random() - 0.5) * 2, // Add slight variation
-          textPositions[i].y + (Math.random() - 0.5) * 2
-        );
-      }
-    };
-    
-    // Wait a short time before assigning targets for initial animation effect
-    setTimeout(assignTargets, 700);
+    // Animation phases
+    let phase = 0;
+    const phases = [
+      { name: 'random', duration: 2000 },
+      { name: 'text', duration: 4000 },
+    ];
+    let phaseStartTime = Date.now();
+    let animationFrame: number;
     
     // Animation loop
     const animate = () => {
       if (!ctx) return;
       
-      // Clear canvas
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      // Clear canvas with slight transparency for trail effect
+      ctx.fillStyle = 'rgba(255, 245, 233, 0.12)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      
+      // Check phase timing
+      const now = Date.now();
+      const phaseElapsed = now - phaseStartTime;
+      
+      if (phase === 0 && phaseElapsed >= phases[0].duration) {
+        // Move to text phase
+        phase = 1;
+        phaseStartTime = now;
+        
+        // Calculate text positions
+        const textPositions = getTextPositions();
+        
+        // Assign targets to particles
+        const particlesToAssign = Math.min(particles.length, textPositions.length);
+        for (let i = 0; i < particlesToAssign; i++) {
+          particles[i].assignTarget(textPositions[i][0], textPositions[i][1]);
+        }
+      }
       
       // Update and draw particles
       particles.forEach(particle => {
@@ -215,8 +265,14 @@ const ParticleLoader: React.FC<ParticleLoaderProps> = ({ isLoading }) => {
         particle.draw();
       });
       
-      // Continue animation loop
-      requestAnimationFrame(animate);
+      // Draw loading text below the particle animation
+      ctx.fillStyle = '#333';
+      ctx.font = '14px Inter, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('Loading experience...', canvas.width / 2, canvas.height / 2 + 80);
+      
+      // Continue animation
+      animationFrame = requestAnimationFrame(animate);
     };
     
     // Start animation
@@ -224,6 +280,7 @@ const ParticleLoader: React.FC<ParticleLoaderProps> = ({ isLoading }) => {
     
     // Cleanup function
     return () => {
+      cancelAnimationFrame(animationFrame);
       window.removeEventListener('resize', updateCanvasSize);
     };
   }, [isLoading]);
@@ -231,7 +288,7 @@ const ParticleLoader: React.FC<ParticleLoaderProps> = ({ isLoading }) => {
   if (!isLoading) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#FFF5E9]/90 backdrop-blur-sm">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#FFF5E9] backdrop-blur-sm">
       <canvas
         ref={canvasRef}
         className="absolute inset-0 w-full h-full"

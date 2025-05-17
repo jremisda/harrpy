@@ -395,3 +395,45 @@ a, button, input, select, textarea, [role="button"], label, .clickable {
 .ease-bounce {
   transition-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1);
 }
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.spin-animation {
+  animation: spin 2s linear infinite;
+}
+
+/* Animation control classes */
+.animations-paused * {
+  /* Prevent all animations from running during loading */
+  animation-play-state: paused !important;
+  transition-delay: 0s !important;
+  transition-duration: 0s !important;
+  animation-delay: -9999s !important; /* Effectively delays all animations from starting */
+}
+
+.animations-paused .spin-animation {
+  /* Exception for the loading spinner - should continue to animate */
+  animation-play-state: running !important;
+  animation-delay: 0s !important;
+}
+
+.animations-enabled * {
+  animation-play-state: running;
+}
+
+/* Animation reset for clean appearance */
+.animations-enabled .animate-in,
+.animations-enabled .stagger-item,
+.animations-enabled .news-grid-item {
+  opacity: 0;
+  animation-delay: 0.3s !important; /* Small delay after loading ends before animations start */
+}
+
+/* Loader animation - always runs regardless of animation pause */
+.loader-animation {
+  animation-play-state: running !important;
+  animation-delay: 0s !important;
+}
