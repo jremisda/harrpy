@@ -6,6 +6,7 @@ export default {
       fontFamily: {
         sans: [
           'Satoshi',
+          'ui-sans-serif',
           'system-ui',
           '-apple-system',
           'BlinkMacSystemFont',
@@ -17,6 +18,7 @@ export default {
         ],
         headline: [
           'Inter',
+          'ui-sans-serif',
           'system-ui',
           '-apple-system',
           'BlinkMacSystemFont',
