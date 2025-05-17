@@ -45,7 +45,7 @@ export const CTASection: React.FC<CTASectionProps> = ({ onEmailSubmit }) => {
         <div className="h-0.5 w-full bg-[#121212] mb-3"></div>
       </div>
       
-      <div className="px-6 md:px-12 lg:px-24 pt-8 pb-16">
+      <div className="px-6 md:px-12 lg:px-24 pt-8 pb-10">
         <div className="flex justify-between items-start md:items-center flex-col md:flex-row gap-8 md:gap-0">
           <h2 className="font-headline text-3xl md:text-4xl font-bold text-black">
             Ready to join Harrpy?

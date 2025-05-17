@@ -8,7 +8,7 @@ import CursorTrail from './components/common/CursorTrail';
 import WaitlistPopup from './components/common/WaitlistPopup';
 import './styles/animations.css';
 import { articleService } from './services/articleService';
-import waitlistService from './services/waitlistService';
+import * as waitlistService from './services/waitlistService';
 import { Article, ArticleListItem, UserType, CreatorFormData, BusinessFormData } from './types';
 
 // Font preloading helper

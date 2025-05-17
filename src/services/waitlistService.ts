@@ -1,21 +1,42 @@
-import { neon, neonConfig } from '@neondatabase/serverless';
+import { neon, NeonQueryFunction } from '@neondatabase/serverless';
 import { CreatorFormData, BusinessFormData, UserType } from '../types';
-import 'dotenv/config';
 
-// Configure Neon client
-neonConfig.fetchConnectionCache = true;
+// Check if we're in a browser or server environment
+const isServer = typeof window === 'undefined';
 
-// Get the database connection string from environment variables
-const databaseUrl = process.env.NEON_DATABASE_URL || '';
+// Type for database result row with id
+interface DbResultRow {
+  id: number;
+  [key: string]: any;
+}
 
-// Initialize the SQL client
-const sql = neon(databaseUrl);
+// Create SQL client based on environment
+const createSqlClient = (): NeonQueryFunction<any, any> => {
+  if (!isServer) {
+    // In browser environment, throw an error 
+    throw new Error('SQL client cannot be created in browser environment');
+  }
+  
+  const connectionString = process.env.NEON_DATABASE_URL;
+  if (!connectionString) {
+    throw new Error('Database connection string is missing');
+  }
+  
+  return neon(connectionString);
+};
 
 /**
  * Initialize the database by creating necessary tables if they don't exist
  */
 export const initDatabase = async (): Promise<void> => {
+  if (!isServer) {
+    console.log('Database initialization skipped in browser environment');
+    return;
+  }
+  
   try {
+    const sql = createSqlClient();
+    
     // Create creators table
     await sql`
       CREATE TABLE IF NOT EXISTS waitlist_creators (
@@ -54,13 +75,20 @@ export const initDatabase = async (): Promise<void> => {
 /**
  * Save creator submission to database
  */
-export const saveCreatorSubmission = async (data: CreatorFormData): Promise<number> => {
+export const saveCreatorSubmission = async (data: CreatorFormData): Promise<number | null> => {
+  if (!isServer) {
+    console.log('Creator submission skipped in browser environment');
+    return null;
+  }
+  
   try {
     const { firstName, lastName, email, socialMediaHandles, aboutYourself } = data;
     
+    const sql = createSqlClient();
+    
     const result = await sql`
       INSERT INTO waitlist_creators (
-        first_name, 
+        first_name,
         last_name, 
         email, 
         instagram, 
@@ -82,7 +110,13 @@ export const saveCreatorSubmission = async (data: CreatorFormData): Promise<numb
       RETURNING id
     `;
     
-    return result[0].id;
+    // Check if result is an array and has at least one element
+    if (Array.isArray(result) && result.length > 0) {
+      const row = result[0] as DbResultRow;
+      return row.id;
+    }
+    
+    return null;
   } catch (error) {
     console.error('Error saving creator submission:', error);
     throw error;
@@ -92,9 +126,16 @@ export const saveCreatorSubmission = async (data: CreatorFormData): Promise<numb
 /**
  * Save business submission to database
  */
-export const saveBusinessSubmission = async (data: BusinessFormData): Promise<number> => {
+export const saveBusinessSubmission = async (data: BusinessFormData): Promise<number | null> => {
+  if (!isServer) {
+    console.log('Business submission skipped in browser environment');
+    return null;
+  }
+  
   try {
     const { businessName, websiteUrl, email, creatorDescription } = data;
+    
+    const sql = createSqlClient();
     
     const result = await sql`
       INSERT INTO waitlist_businesses (
@@ -112,7 +153,13 @@ export const saveBusinessSubmission = async (data: BusinessFormData): Promise<nu
       RETURNING id
     `;
     
-    return result[0].id;
+    // Check if result is an array and has at least one element
+    if (Array.isArray(result) && result.length > 0) {
+      const row = result[0] as DbResultRow;
+      return row.id;
+    }
+    
+    return null;
   } catch (error) {
     console.error('Error saving business submission:', error);
     throw error;
@@ -120,23 +167,19 @@ export const saveBusinessSubmission = async (data: BusinessFormData): Promise<nu
 };
 
 /**
- * Save a waitlist submission based on user type
+ * Main function to save a waitlist submission based on user type
  */
 export const saveWaitlistSubmission = async (
   data: CreatorFormData | BusinessFormData, 
   userType: UserType
 ): Promise<number | null> => {
-  try {
-    if (userType === 'creator') {
-      return await saveCreatorSubmission(data as CreatorFormData);
-    } else if (userType === 'business') {
-      return await saveBusinessSubmission(data as BusinessFormData);
-    }
-    return null;
-  } catch (error) {
-    console.error('Error saving waitlist submission:', error);
-    throw error;
+  if (userType === 'creator') {
+    return saveCreatorSubmission(data as CreatorFormData);
+  } else if (userType === 'business') {
+    return saveBusinessSubmission(data as BusinessFormData);
   }
+  
+  return null;
 };
 
 export default {

@@ -58,6 +58,118 @@
   animation: fade-in 0.3s ease-out forwards;
 }
 
+/* News page card hover effect - separated properties for better performance */
+.hover-lift {
+  transform: translateY(0);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), 
+              box-shadow 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  will-change: transform, box-shadow;
+}
+
+.hover-lift:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Improved staggered fade-in for list items */
+@keyframes stagger-fade-in {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.stagger-container {
+  min-height: 100px; /* Prevents layout shifts */
+}
+
+.stagger-item {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: stagger-fade-in 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  will-change: transform, opacity;
+}
+
+.stagger-delay-1 { animation-delay: 0.1s; }
+.stagger-delay-2 { animation-delay: 0.2s; }
+.stagger-delay-3 { animation-delay: 0.3s; }
+.stagger-delay-4 { animation-delay: 0.4s; }
+.stagger-delay-5 { animation-delay: 0.5s; }
+.stagger-delay-6 { animation-delay: 0.6s; }
+
+/* Improved page transition effects with better timing functions */
+@keyframes page-enter {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes page-exit {
+  0% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+}
+
+.page-transition-container {
+  position: relative;
+  min-height: 200px; /* Prevents layout shifts */
+}
+
+.page-enter {
+  animation: page-enter 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  will-change: transform, opacity;
+}
+
+.page-exit {
+  animation: page-exit 0.5s cubic-bezier(0.55, 0.085, 0.68, 0.53) forwards;
+  will-change: transform, opacity;
+  position: absolute;
+  width: 100%;
+}
+
+/* Category button hover effect */
+.category-btn {
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.category-btn::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 0;
+  background-color: rgba(0, 0, 0, 0.05);
+  transition: height 0.25s ease;
+  z-index: -1;
+}
+
+.category-btn:hover::after {
+  height: 100%;
+}
+
+.category-btn.active {
+  background-color: black;
+  color: white;
+}
+
 @keyframes float-slow {
   0%, 100% {
     transform: translate(0, 0) scale(1);
@@ -181,4 +293,105 @@ a, button, input, select, textarea, [role="button"], label, .clickable {
   opacity: 0.4;
   z-index: 9997;
   will-change: transform, width, height;
+}
+
+/* Enhanced accessibility for reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  /* Base animations */
+  .animate-blob,
+  .animate-bounce-down,
+  .animate-fade-in,
+  .animate-float-slow,
+  .animate-float-medium,
+  .animate-float-fast,
+  .stagger-item,
+  .page-enter,
+  .page-exit,
+  .animate-in,
+  .news-grid-item {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+    opacity: 1 !important;
+  }
+  
+  /* Transitions */
+  * {
+    transition-duration: 0.001ms !important;
+    animation-duration: 0.001ms !important;
+  }
+  
+  /* Hover effects - keep subtle hover effects but remove transforms */
+  .hover-lift:hover {
+    transform: none !important;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1) !important;
+  }
+  
+  /* Custom cursor */
+  .cursor-dot,
+  .cursor-trail,
+  .cursor-shimmer {
+    display: none !important;
+  }
+  
+  /* Reset cursor to default */
+  html, body, 
+  a, button, input, select, textarea, [role="button"], label, .clickable {
+    cursor: auto !important;
+  }
+}
+
+/* Animate-in effect for elements coming into view */
+@keyframes slide-up-fade-in {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-in {
+  animation: slide-up-fade-in 0.8s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+}
+
+/* Improved staggered animations for news grid */
+.news-grid {
+  position: relative;
+}
+
+.news-grid-item {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.news-grid-item.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Delay modifiers for staggered animations */
+.delay-0 { transition-delay: 0s; }
+.delay-1 { transition-delay: 0.1s; }
+.delay-2 { transition-delay: 0.2s; }
+.delay-3 { transition-delay: 0.3s; }
+.delay-4 { transition-delay: 0.4s; }
+.delay-5 { transition-delay: 0.5s; }
+.delay-6 { transition-delay: 0.6s; }
+
+/* More natural easing curves */
+.ease-natural-out {
+  transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.ease-natural-in {
+  transition-timing-function: cubic-bezier(0.64, 0, 0.78, 0);
+}
+
+.ease-bounce {
+  transition-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1);
 }
