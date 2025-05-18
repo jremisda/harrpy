@@ -43,3 +43,196 @@
     z-index: 1;
   }
 }
+
+/* Article content styling */
+.article-content {
+  color: #333;
+  line-height: 1.7;
+  font-size: 1.125rem;
+  max-width: 70ch;
+  margin: 0 auto;
+  font-kerning: normal;
+  text-rendering: optimizeLegibility;
+}
+
+.article-content h1 {
+  font-size: 2.25rem;
+  margin-top: 2.5rem;
+  margin-bottom: 1.25rem;
+  font-weight: 700;
+  line-height: 1.2;
+  font-family: var(--font-headline);
+  letter-spacing: -0.02em;
+}
+
+.article-content h2 {
+  font-size: 1.875rem;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  font-weight: 700;
+  line-height: 1.3;
+  font-family: var(--font-headline);
+  letter-spacing: -0.015em;
+}
+
+.article-content h3 {
+  font-size: 1.5rem;
+  margin-top: 1.75rem;
+  margin-bottom: 0.875rem;
+  font-weight: 600;
+  line-height: 1.4;
+  font-family: var(--font-headline);
+  letter-spacing: -0.01em;
+}
+
+.article-content p {
+  margin-bottom: 1.5rem;
+  max-width: 70ch;
+  line-height: 1.75;
+}
+
+.article-content ul, 
+.article-content ol {
+  margin-bottom: 1.5rem;
+  padding-left: 1.75rem;
+  margin-top: 0.5rem;
+}
+
+.article-content ul {
+  list-style-type: disc;
+}
+
+.article-content ol {
+  list-style-type: decimal;
+}
+
+.article-content li {
+  margin-bottom: 0.625rem;
+  max-width: 65ch;
+  line-height: 1.6;
+  padding-left: 0.25rem;
+}
+
+.article-content li:last-child {
+  margin-bottom: 0;
+}
+
+.article-content li > ul,
+.article-content li > ol {
+  margin-top: 0.625rem;
+  margin-bottom: 0;
+}
+
+.article-content strong {
+  font-weight: 700;
+  color: #111;
+}
+
+.article-content em {
+  font-style: italic;
+}
+
+.article-content blockquote {
+  border-left: 4px solid rgba(0, 0, 0, 0.2);
+  padding: 0.625rem 0 0.625rem 1.25rem;
+  font-style: italic;
+  margin: 1.75rem 0;
+  color: #555;
+  background-color: rgba(0, 0, 0, 0.02);
+  border-radius: 0 0.25rem 0.25rem 0;
+}
+
+.article-content blockquote p {
+  margin-bottom: 0.75rem;
+}
+
+.article-content blockquote p:last-child {
+  margin-bottom: 0;
+}
+
+.article-content a {
+  color: #2563eb;
+  text-decoration: none;
+  transition: color 0.2s, border-bottom 0.2s;
+  border-bottom: 1px solid rgba(37, 99, 235, 0.2);
+  font-weight: 500;
+}
+
+.article-content a:hover {
+  border-bottom: 1px solid currentColor;
+  color: #1d4ed8;
+}
+
+.article-content code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 0.875em;
+  background-color: rgba(0, 0, 0, 0.04);
+  padding: 0.2em 0.4em;
+  border-radius: 0.25rem;
+  white-space: nowrap;
+}
+
+.article-content pre {
+  background-color: rgba(0, 0, 0, 0.04);
+  border-radius: 0.25rem;
+  padding: 1rem;
+  overflow-x: auto;
+  margin: 1.5rem 0;
+}
+
+.article-content pre code {
+  background-color: transparent;
+  padding: 0;
+  white-space: pre;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: #333;
+  display: block;
+}
+
+.article-content img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.375rem;
+  margin: 1.5rem 0;
+}
+
+/* Table styles */
+.article-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+  font-size: 0.95em;
+}
+
+.article-content th {
+  background-color: rgba(0, 0, 0, 0.04);
+  font-weight: 600;
+  text-align: left;
+  padding: 0.75rem 1rem;
+  border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+}
+
+.article-content td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.article-content tr:nth-child(even) {
+  background-color: rgba(0, 0, 0, 0.02);
+}
+
+/* Add some more spacing between sections */
+.article-content h1 + p,
+.article-content h2 + p,
+.article-content h3 + p {
+  margin-top: 0.75rem;
+}
+
+/* Horizontal rule */
+.article-content hr {
+  border: 0;
+  height: 1px;
+  background-color: rgba(0, 0, 0, 0.1);
+  margin: 2rem 0;
+}

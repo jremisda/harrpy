@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Routes, Route, useNavigate, useLocation, Link } from 'react-router-dom';
+import { Routes, Route, useNavigate, useLocation, Link, Navigate } from 'react-router-dom';
 import Navbar from './components/layout/Navbar';
 import Hero from './components/layout/Hero';
 import MainContent from './components/layout/MainContent';
@@ -13,6 +13,7 @@ import * as waitlistService from './services/waitlistService';
 import { Article, ArticleListItem, UserType, CreatorFormData, BusinessFormData } from './types';
 import SEO from './components/common/SEO';
 import { useLoading } from './context/LoadingContext';
+import NotFoundPage from './components/pages/NotFoundPage';
 
 // Font preloading helper - simplified approach
 const preloadFonts = () => {
@@ -27,6 +28,7 @@ const ArticlePage: React.FC = () => {
   const [article, setArticle] = useState<Article | null>(null);
   const [loading, setLoading] = useState(true);
   const [relatedArticles, setRelatedArticles] = useState<ArticleListItem[]>([]);
+  const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const slug = location.pathname.replace('/articles/', '');
@@ -52,6 +54,28 @@ const ArticlePage: React.FC = () => {
 
     fetchArticle();
   }, [slug]);
+  
+  // Add scroll event listener
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollTop = window.scrollY;
+      if (scrollTop > 150) {
+        setScrolled(true);
+      } else {
+        setScrolled(false);
+      }
+      
+      // Apply parallax effect to the image
+      const imageElement = document.querySelector('.article-hero-image');
+      if (imageElement) {
+        const yPos = scrollTop * 0.2;
+        imageElement.setAttribute('style', `transform: translate3d(0, ${yPos}px, 0)`);
+      }
+    };
+    
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const handleShareClick = (platform: string) => {
     const url = window.location.href;
@@ -120,7 +144,9 @@ const ArticlePage: React.FC = () => {
           {/* Back button */}
           <button
             onClick={() => navigate('/news')}
-            className="flex items-center mb-8 text-black/70 hover:text-black transition-colors"
+            className={`flex items-center mb-8 text-black/70 hover:text-black transition-colors ${
+              scrolled ? 'opacity-50 hover:opacity-100' : 'opacity-100'
+            }`}
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -146,7 +172,9 @@ const ArticlePage: React.FC = () => {
             </div>
             
             {/* Share options */}
-            <div className="flex items-center space-x-3">
+            <div className={`flex items-center space-x-3 transition-opacity duration-300 ${
+              scrolled ? 'opacity-50 hover:opacity-100' : 'opacity-100'
+            }`}>
               <button 
                 onClick={() => handleShareClick('twitter')}
                 className="w-8 h-8 flex items-center justify-center rounded-full bg-black/5 hover:bg-black/10 transition-colors"
@@ -187,29 +215,97 @@ const ArticlePage: React.FC = () => {
             </div>
           </div>
           
-          <div className="mb-10 rounded-lg overflow-hidden shadow-lg">
-            <img 
-              src={article.image.url} 
-              alt={article.image.alt} 
-              className="w-full h-auto max-h-[500px] object-cover"
-            />
+          <div className="mb-10 rounded-lg overflow-hidden shadow-lg relative">
+            <div className="relative overflow-hidden" style={{ maxHeight: '500px' }}>
+              <img 
+                src={article.image.url} 
+                alt={article.image.alt} 
+                className="w-full h-auto max-h-[500px] object-cover article-hero-image transition-transform duration-100 ease-out will-change-transform"
+              />
+            </div>
             {article.image.caption && (
               <p className="text-sm text-gray-500 italic mt-2 px-4 py-2">{article.image.caption}</p>
             )}
           </div>
           
-          <div className="prose prose-lg max-w-none">
+          <div className="prose prose-lg max-w-none article-content">
             <div dangerouslySetInnerHTML={{ __html: article.content
-              .replace(/\n\n/g, '</p><p>')
-              .replace(/\n/g, '<br>')
+              // Normalize line breaks for consistent processing
+              .replace(/\r\n/g, '\n')
+              
+              // First process the headings (before paragraphs)
               .replace(/^# (.*$)/gm, '<h1 class="text-3xl font-bold font-headline mb-4 mt-8">$1</h1>')
               .replace(/^## (.*$)/gm, '<h2 class="text-2xl font-bold font-headline mb-3 mt-6">$1</h2>')
               .replace(/^### (.*$)/gm, '<h3 class="text-xl font-bold font-headline mb-3 mt-5">$1</h3>')
-              .replace(/^\* (.*$)/gm, '<li class="ml-6 mb-2">$1</li>')
-              .replace(/<li class="ml-6 mb-2">(.*)<\/li>/g, '<ul class="list-disc mb-4"><li class="ml-6 mb-2">$1</li></ul>')
-              .replace(/^>(.*$)/gm, '<blockquote class="pl-4 border-l-4 border-black/20 italic my-4">$1</blockquote>')
+              
+              // Process horizontal rules
+              .replace(/^---$/gm, '<hr />')
+              
+              // Process blockquotes (handling multi-paragraph blockquotes)
+              .replace(/^> (.*$)/gm, '<blockquote><p>$1</p></blockquote>')
+              .replace(/<\/blockquote>\n<blockquote>/g, '')
+              
+              // Process code blocks
+              .replace(/```([a-z]*)\n([\s\S]*?)\n```/g, '<pre><code class="language-$1">$2</code></pre>')
+              .replace(/`([^`]+)`/g, '<code>$1</code>')
+              
+              // Process tables (basic markdown tables)
+              .replace(/^\|(.*)\|$/gm, (match, content: string) => {
+                const cells = content.split('|').map((cell: string) => cell.trim());
+                return `<tr>${cells.map(cell => `<td>${cell}</td>`).join('')}</tr>`;
+              })
+              // Simplified table header handling (avoiding previousMatch which doesn't exist)
+              .replace(/^\|[\-:|\s]+\|$/gm, '') // Just remove separator lines
+              .replace(/(<tr>.*?<\/tr>\n?)(?=<tr>|$)/gs, (match) => {
+                // Convert first row to header row
+                if (match === match.match(/^<tr>.*?<\/tr>/)?.[0]) {
+                  return match.replace(/<td>/g, '<th>').replace(/<\/td>/g, '</th>');
+                }
+                return match;
+              })
+              .replace(/(<tr>.*<\/tr>\n*)+/gs, '<table class="w-full my-4">$&</table>')
+              
+              // Process paragraphs - more comprehensive approach
+              .replace(/\n\n([^#\n<][^\n]*)/g, '</p><p>$1')
+              
+              // Process inline styles (bold, italic)
               .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
               .replace(/\*(.*?)\*/g, '<em>$1</em>')
+              
+              // Process links with proper classes
+              .replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" class="text-blue-600 border-b border-blue-600/20 hover:border-current transition-all duration-200">$1</a>')
+              
+              // Process lists - better pattern for list items
+              .replace(/^\* (.*?)$/gm, '<li>$1</li>')
+              .replace(/^\d+\. (.*?)$/gm, '<li>$1</li>')
+              
+              // Wrap lists properly
+              .replace(/(<li>.*?<\/li>\s*)+/gs, match => {
+                // Determine if this is an ordered or unordered list
+                // Look for pattern that would have come from numbered list items
+                if (match.includes('1.') || match.includes('2.') || match.includes('3.')) {
+                  return `<ol class="list-decimal pl-6 mb-4">${match}</ol>`;
+                }
+                return `<ul class="list-disc pl-6 mb-4">${match}</ul>`;
+              })
+              
+              // Final wrapper for paragraphs
+              .replace(/^([^<].*)/gm, '<p>$1</p>')
+              
+              // Clean up potential empty paragraphs or duplicates
+              .replace(/<p>\s*<\/p>/g, '')
+              .replace(/<p><\/p><p>/g, '<p>')
+              .replace(/<p><p>/g, '<p>')
+              .replace(/<\/p><\/p>/g, '</p>')
+              
+              // Handle line breaks within paragraphs
+              .replace(/([^>])\n([^<])/g, '$1<br />$2')
+              
+              // Ensure content starts with a paragraph tag
+              .replace(/^(?!<)/, '<p>')
+              
+              // Ensure content ends with a closing paragraph tag if needed
+              .replace(/([^>])$/, '$1</p>')
             }} />
           </div>
           
@@ -303,6 +399,18 @@ const ArticlePage: React.FC = () => {
 };
 
 /**
+ * Waitlist redirect component that simply opens the waitlist popup
+ */
+const WaitlistRedirect: React.FC<{ onOpenWaitlist: () => void }> = ({ onOpenWaitlist }) => {
+  useEffect(() => {
+    // Open the waitlist popup when this component mounts
+    onOpenWaitlist();
+  }, [onOpenWaitlist]);
+  
+  return <Navigate to="/" />;
+};
+
+/**
  * Main App component that serves as the entry point for the Harrpy application.
  * It assembles the primary layout components and decorative elements.
  */
@@ -326,7 +434,7 @@ function App() {
       // Show loading animation for a reasonable amount of time
       setTimeout(() => {
         setPageLoading(false);
-      }, 1500);
+      }, 1000);
     });
   }, []);
 
@@ -334,6 +442,13 @@ function App() {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [location.pathname]);
+
+  // Check for waitlist in the URL on initial load
+  useEffect(() => {
+    if (location.pathname === '/waitlist') {
+      setIsWaitlistOpen(true);
+    }
+  }, []);
 
   // Function to handle navigation
   const handleNavigation = (view: string) => {
@@ -418,6 +533,8 @@ function App() {
           } />
           <Route path="/news" element={<NewsContent />} />
           <Route path="/articles/:slug" element={<ArticlePage />} />
+          <Route path="/waitlist" element={<WaitlistRedirect onOpenWaitlist={handleOpenWaitlist} />} />
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
         
         {/* Waitlist Popup - moved to App level */}

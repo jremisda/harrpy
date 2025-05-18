@@ -1,11 +1,9 @@
 import { Article } from '../../types';
-import earlyAccessProgram from './early-access-program';
-import creatorCollaborations from './creator-collaborations';
+import whatIsHarrpy from './what-is-harrpy';
 
 // Add all articles to this array
 export const articles: Article[] = [
-  earlyAccessProgram,
-  creatorCollaborations,
+  whatIsHarrpy,
   // Add new articles here
 ];
 

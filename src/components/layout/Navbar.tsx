@@ -61,9 +61,14 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView, onOpenW
           <div className="space-x-8">
             <Link 
               to="/news" 
-              className={`text-black hover:text-black/70 transition-colors duration-200 ${currentView === 'news' ? 'font-bold' : ''}`}
+              className={`text-black hover:text-black/70 transition-colors duration-200 relative ${
+                currentView === 'news' ? 'font-bold' : ''
+              }`}
             >
               News
+              {currentView === 'news' && (
+                <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-black rounded-full"></span>
+              )}
             </Link>
             <a 
               href="#" 

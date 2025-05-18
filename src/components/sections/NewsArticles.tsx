@@ -89,7 +89,10 @@ const NewsArticles: React.FC<NewsArticlesProps> = ({
       if (selectedCategory !== null) {
         setIsLoading(true);
         setIsTransitioning(true);
-        setVisibleItems(new Set()); // Reset visible items for new animation
+        
+        // Only reset visible items when changing from one specific category to another
+        // Don't reset when going from null (all) to a specific category
+        const previousArticleIds = new Set(articles.map(a => a.id));
         
         try {
           const filters: ArticleFilters = {
@@ -107,8 +110,17 @@ const NewsArticles: React.FC<NewsArticlesProps> = ({
             setIsLoading(false);
             
             // Trigger staggered visibility after content change
+            // Add new articles to visible items
             setTimeout(() => {
               setIsTransitioning(false);
+              
+              // Make new articles visible
+              const newArticleIds = articlesResponse.articles.map(a => a.id);
+              setVisibleItems(prev => {
+                const newSet = new Set(prev);
+                newArticleIds.forEach(id => newSet.add(id));
+                return newSet;
+              });
             }, 100);
           }, 300);
         } catch (error) {
@@ -123,7 +135,7 @@ const NewsArticles: React.FC<NewsArticlesProps> = ({
     if (selectedCategory !== null) {
       fetchFilteredArticles();
     }
-  }, [selectedCategory]);
+  }, [selectedCategory, articles]);
 
   // Start animation after component is mounted
   useEffect(() => {
@@ -137,7 +149,10 @@ const NewsArticles: React.FC<NewsArticlesProps> = ({
           ...(featuredArticles.map(a => a.id)),
           ...(articles.map(a => a.id))
         ]);
-        setVisibleItems(allIds);
+        setVisibleItems(prevItems => {
+          // Merge with previous items instead of replacing them
+          return new Set([...prevItems, ...allIds]);
+        });
       }, 300);
     }, 300);
     
@@ -159,7 +174,15 @@ const NewsArticles: React.FC<NewsArticlesProps> = ({
         if (entry.isIntersecting) {
           const id = entry.target.getAttribute('data-article-id');
           if (id) {
-            setVisibleItems(prev => new Set([...prev, id]));
+            // Once an item is visible, it stays visible
+            setVisibleItems(prev => {
+              const newItems = new Set(prev);
+              newItems.add(id);
+              return newItems;
+            });
+            
+            // Add a persistent visible class to ensure it stays visible
+            entry.target.classList.add('visible');
           }
         }
       });
@@ -169,16 +192,29 @@ const NewsArticles: React.FC<NewsArticlesProps> = ({
     
     // Observe all article cards
     const articleElements = gridRef.current.querySelectorAll('[data-article-id]');
-    articleElements.forEach(el => observer.observe(el));
+    articleElements.forEach(el => {
+      // If already visible in our state, add the class right away
+      const id = el.getAttribute('data-article-id');
+      if (id && visibleItems.has(id)) {
+        el.classList.add('visible');
+      }
+      
+      observer.observe(el);
+    });
     
     return () => observer.disconnect();
-  }, [articles, isTransitioning]);
+  }, [articles, isTransitioning, visibleItems]);
 
   const handleCategoryChange = (categorySlug: string | null) => {
     if (categorySlug === selectedCategory) return;
     
     setIsTransitioning(true);
-    setVisibleItems(new Set()); // Reset visible items for new animation
+    
+    // Only clear visible items when changing to a completely different category
+    // Don't clear when going from a category to "all" or from "all" to a category
+    if (categorySlug !== null && selectedCategory !== null) {
+      setVisibleItems(new Set()); // Reset visible items for new animation
+    }
     
     // Slide out with slight delay before changing data
     setTimeout(() => {
@@ -259,7 +295,10 @@ const NewsArticles: React.FC<NewsArticlesProps> = ({
         className={`news-grid page-transition-container transition-opacity duration-500 ease-natural-out ${
           animated ? 'opacity-100' : 'opacity-0'
         } ${isTransitioning ? 'opacity-50' : 'opacity-100'}`}
-        style={{ minHeight: '500px' }}
+        style={{ 
+          minHeight: '500px',
+          willChange: 'opacity, transform'
+        }}
         ref={gridRef}
       >
         {isLoading && articles.length === 0 ? (

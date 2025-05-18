@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import useLazyLoad from '../../hooks/useLazyLoad';
 
 interface OptimizedImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
@@ -22,6 +22,9 @@ const OptimizedImage: React.FC<OptimizedImageProps> = ({
   eager = false,
   ...props 
 }) => {
+  // Track image loading state
+  const [isLoaded, setIsLoaded] = useState(false);
+  
   // Use lazy loading hook unless eager loading is specified
   const { elementRef, isVisible } = useLazyLoad<HTMLDivElement>({
     once: true,
@@ -47,6 +50,14 @@ const OptimizedImage: React.FC<OptimizedImageProps> = ({
   // Fall back to original if needed
   const originalSrc = src.startsWith('/') ? src : `/${src}`;
 
+  // Check if path includes articles - these might not be optimized
+  const isArticleImage = src.includes('/articles/');
+
+  // Handle image load event
+  const handleImageLoad = () => {
+    setIsLoaded(true);
+  };
+
   return (
     <div 
       ref={eager ? null : elementRef}
@@ -58,17 +69,31 @@ const OptimizedImage: React.FC<OptimizedImageProps> = ({
       }}
     >
       {shouldRender && (
-        <picture>
-          <source srcSet={webpSrc} type="image/webp" />
-          <source srcSet={pngSrc} type="image/png" />
+        isArticleImage ? (
+          // For article images, use original path directly to avoid 404s
           <img
             src={originalSrc}
             alt={alt}
-            className="w-full h-full object-cover"
+            className={`w-full h-full object-cover transition-opacity duration-500 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}
             loading={eager ? 'eager' : 'lazy'}
+            onLoad={handleImageLoad}
             {...props}
           />
-        </picture>
+        ) : (
+          // For other images, try optimized versions first with fallback
+          <picture>
+            <source srcSet={webpSrc} type="image/webp" />
+            <source srcSet={pngSrc} type="image/png" />
+            <img
+              src={originalSrc}
+              alt={alt}
+              className={`w-full h-full object-cover transition-opacity duration-500 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}
+              loading={eager ? 'eager' : 'lazy'}
+              onLoad={handleImageLoad}
+              {...props}
+            />
+          </picture>
+        )
       )}
     </div>
   );
