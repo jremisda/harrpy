@@ -94,7 +94,7 @@ export const EarlyAccessBenefits: React.FC = () => {
               
               <div className="md:w-1/2 flex flex-col relative z-10" style={{ perspective: '1000px' }}>
                 <h3 className="font-headline text-white text-xl mb-6 transition-all duration-300 ease-in-out">
-                  {activeView === 'creators' ? 'For Creators – Early Access Benefits' : 'For Businesses – Early Access Benefits'}
+                  {activeView === 'creators' ? 'For Creators – Early Access Benefits' : 'Business/Agency Perks'}
                 </h3>
                 
                 <div className="relative h-[400px]">
@@ -147,20 +147,20 @@ export const EarlyAccessBenefits: React.FC = () => {
                     }}
                   >
                     <div className="bg-white/10 backdrop-blur-sm rounded-lg p-5 border border-white/5 shadow-lg hover:shadow-[0_0_20px_rgba(255,255,255,0.15)] transition-shadow duration-300">
-                      <p className="text-white text-xl font-medium">6 Months of Harrpy Pro</p>
-                      <p className="text-base text-gray-300">Full feature access including unlimited post creation, direct replies, and enhanced visibility in the creator feed.</p>
+                      <p className="text-white text-xl font-medium">6 Months Free Pro Access</p>
+                      <p className="text-base text-gray-300">Unlock unlimited collab briefs, direct replies, and enhanced visibility in the creator feed.</p>
                     </div>
                     <div className="bg-white/10 backdrop-blur-sm rounded-lg p-5 border border-white/5 shadow-lg hover:shadow-[0_0_20px_rgba(255,255,255,0.15)] transition-shadow duration-300">
-                      <p className="text-white text-xl font-medium">Priority Placement for Collab Briefs</p>
-                      <p className="text-base text-gray-300">Your collaboration offers appear first to top creators, leading to faster, higher-quality matches.</p>
+                      <p className="text-white text-xl font-medium">Top of the Feed</p>
+                      <p className="text-base text-gray-300">Your offers appear first to verified creators, increasing exposure and response speed.</p>
                     </div>
                     <div className="bg-white/10 backdrop-blur-sm rounded-lg p-5 border border-white/5 shadow-lg hover:shadow-[0_0_20px_rgba(255,255,255,0.15)] transition-shadow duration-300">
-                      <p className="text-white text-xl font-medium">Verified Business Profile with Early Adopter Badge</p>
-                      <p className="text-base text-gray-300">Gain instant trust with a verified status and be recognized as a founding partner on the platform.</p>
+                      <p className="text-white text-xl font-medium">Verified & Early</p>
+                      <p className="text-base text-gray-300">Get a verified badge and Early Adopter status that builds trust and shows you're a founding brand.</p>
                     </div>
                     <div className="bg-white/10 backdrop-blur-sm rounded-lg p-5 border border-white/5 shadow-lg hover:shadow-[0_0_20px_rgba(255,255,255,0.15)] transition-shadow duration-300">
-                      <p className="text-white text-xl font-medium">50% Off Harrpy Pro for 2 Years</p>
-                      <p className="text-base text-gray-300">Maintain long-term access at a significantly reduced rate after the free period ends.</p>
+                      <p className="text-white text-xl font-medium">Lock In 50% Off</p>
+                      <p className="text-base text-gray-300">After your free access, keep Harrpy Pro at half the price for two years.</p>
                     </div>
                   </div>
                 </div>
