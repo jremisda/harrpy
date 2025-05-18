@@ -27,7 +27,7 @@ const CursorTrail: React.FC = () => {
   const [isMoving, setIsMoving] = useState(false);
   const [velocity, setVelocity] = useState(0);
   const [lastMousePos, setLastMousePos] = useState({ x: 0, y: 0 });
-  const [nextId, setNextId] = useState(0);
+  const [nextId, setNextId] = useState(1); // Start with 1 instead of 0
   const [throttle, setThrottle] = useState(false);
 
   // Colors from our palette
@@ -100,7 +100,11 @@ const CursorTrail: React.FC = () => {
         return newPoints;
       });
       
-      setNextId(nextId + 1);
+      // Always increment the ID to ensure uniqueness
+      setNextId(prevId => prevId + 1);
+    } else {
+      // Increment ID even when not creating a point to maintain the modulo pattern
+      setNextId(prevId => prevId + 1);
     }
     
   }, [calculateVelocity, lastMousePos, nextId, primaryColor, secondaryColor, throttle]);
@@ -196,7 +200,7 @@ const CursorTrail: React.FC = () => {
       {/* Trail particles - using a conditional render to limit number of particles */}
       {trailPoints.slice(-15).map((point) => (
         <div
-          key={point.id}
+          key={`trail-${point.id}-${point.timestamp}`}
           id={`trail-${point.id}`}
           className="cursor-trail"
           style={{
