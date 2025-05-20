@@ -73,6 +73,13 @@ export const articleService = {
         );
       }
       
+      // Filter out articles by ID
+      if (filters.excludeIds && filters.excludeIds.length > 0) {
+        filteredArticles = filteredArticles.filter(article => 
+          !filters.excludeIds?.includes(article.id)
+        );
+      }
+      
       if (filters.search) {
         const searchLower = filters.search.toLowerCase();
         filteredArticles = filteredArticles.filter(article => 

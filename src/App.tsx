@@ -14,6 +14,7 @@ import { Article, ArticleListItem, UserType, CreatorFormData, BusinessFormData }
 import SEO from './components/common/SEO';
 import { useLoading } from './context/LoadingContext';
 import NotFoundPage from './components/pages/NotFoundPage';
+import Toast from './components/common/Toast';
 
 // Font preloading helper - simplified approach
 const preloadFonts = () => {
@@ -32,6 +33,7 @@ const ArticlePage: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const slug = location.pathname.replace('/articles/', '');
+  const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'info' | 'warning' } | null>(null);
 
   useEffect(() => {
     const fetchArticle = async () => {
@@ -94,10 +96,17 @@ const ArticlePage: React.FC = () => {
       case 'copy':
         navigator.clipboard.writeText(url)
           .then(() => {
-            alert('Link copied to clipboard!');
+            setToast({ message: 'Link Copied', type: 'success' });
+            setTimeout(() => {
+              setToast(null);
+            }, 3000);
           })
           .catch(err => {
             console.error('Failed to copy link:', err);
+            setToast({ message: 'Unable to copy link', type: 'error' });
+            setTimeout(() => {
+              setToast(null);
+            }, 3000);
           });
         break;
       default:
@@ -137,85 +146,93 @@ const ArticlePage: React.FC = () => {
         description={article.seo?.description || article.summary}
         ogImage={article.image.url}
         canonical={`${window.location.origin}/articles/${article.slug}`}
+        type="article"
+        publishedAt={article.publishedAt}
+        modifiedAt={article.updatedAt}
+        author={article.author.name}
+        section={article.category.name}
+        tags={article.tags.map(tag => tag.name)}
+        siteName="Harrpy | From the Verified"
       />
       
-      <div className="pt-8 px-6 md:px-12 lg:px-24 pb-12">
+      <div className="pt-4 md:pt-8 px-6 md:px-12 lg:px-24 pb-12">
         <div className="max-w-4xl mx-auto">
-          {/* Back button */}
-          <button
-            onClick={() => navigate('/news')}
-            className={`flex items-center mb-8 text-black/70 hover:text-black transition-colors ${
-              scrolled ? 'opacity-50 hover:opacity-100' : 'opacity-100'
-            }`}
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
-            Back to News
-          </button>
-          
-          <div className="mb-6">
-            <span className="inline-block px-3 py-1 bg-black/80 text-white rounded-md text-sm">
-              {article.category.name}
-            </span>
-          </div>
-          
-          <h1 className="font-headline text-4xl md:text-5xl font-black mb-6">{article.title}</h1>
-          
-          <div className="flex items-center justify-between mb-8">
-            <div className="flex items-center">
-              <div className="text-sm text-gray-500">
-                <span>{new Date(article.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
-                <span className="mx-2">•</span>
-                <span>{article.readingTime} min read</span>
-              </div>
+          {/* Article header */}
+          <div className="mb-8 md:mb-10">
+            {/* Back button and category tag */}
+            <div className="flex items-center justify-between mb-6">
+              <Link
+                to="/news"
+                className="inline-flex items-center px-4 py-2 bg-black text-white font-medium text-sm rounded-[4px] shadow-sm hover:bg-black/90 transition-all duration-300 ease-bounce"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
+                Back to News
+              </Link>
+              <span className="inline-flex px-4 py-1.5 bg-black/80 text-white rounded-[4px] text-sm">
+                {article.category.name}
+              </span>
             </div>
             
-            {/* Share options */}
-            <div className={`flex items-center space-x-3 transition-opacity duration-300 ${
-              scrolled ? 'opacity-50 hover:opacity-100' : 'opacity-100'
-            }`}>
-              <button 
-                onClick={() => handleShareClick('twitter')}
-                className="w-8 h-8 flex items-center justify-center rounded-full bg-black/5 hover:bg-black/10 transition-colors"
-                aria-label="Share on Twitter"
-              >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path>
-                </svg>
-              </button>
-              <button 
-                onClick={() => handleShareClick('facebook')}
-                className="w-8 h-8 flex items-center justify-center rounded-full bg-black/5 hover:bg-black/10 transition-colors"
-                aria-label="Share on Facebook"
-              >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
-                </svg>
-              </button>
-              <button 
-                onClick={() => handleShareClick('linkedin')}
-                className="w-8 h-8 flex items-center justify-center rounded-full bg-black/5 hover:bg-black/10 transition-colors"
-                aria-label="Share on LinkedIn"
-              >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
-                </svg>
-              </button>
-              <button 
-                onClick={() => handleShareClick('copy')}
-                className="w-8 h-8 flex items-center justify-center rounded-full bg-black/5 hover:bg-black/10 transition-colors"
-                aria-label="Copy Link"
-              >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                </svg>
-              </button>
+            {/* Title */}
+            <h1 className="font-headline text-4xl md:text-5xl lg:text-6xl font-black mb-6 leading-[1.1]">{article.title}</h1>
+            
+            {/* Article metadata and share buttons */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 sm:gap-0">
+              <div className="flex items-center">
+                <div className="text-sm text-gray-600 font-medium">
+                  <span>{new Date(article.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+                  <span className="mx-2">•</span>
+                  <span>{article.readingTime} min read</span>
+                </div>
+              </div>
+              
+              {/* Share options */}
+              <div className="flex items-center space-x-3">
+                <button 
+                  onClick={() => handleShareClick('twitter')}
+                  className="w-10 h-10 flex items-center justify-center rounded-full bg-black/5 hover:bg-black/10 transition-colors"
+                  aria-label="Share on Twitter"
+                >
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path>
+                  </svg>
+                </button>
+                <button 
+                  onClick={() => handleShareClick('facebook')}
+                  className="w-10 h-10 flex items-center justify-center rounded-full bg-black/5 hover:bg-black/10 transition-colors"
+                  aria-label="Share on Facebook"
+                >
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                  </svg>
+                </button>
+                <button 
+                  onClick={() => handleShareClick('linkedin')}
+                  className="w-10 h-10 flex items-center justify-center rounded-full bg-black/5 hover:bg-black/10 transition-colors"
+                  aria-label="Share on LinkedIn"
+                >
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                  </svg>
+                </button>
+                <button 
+                  onClick={() => handleShareClick('copy')}
+                  className="w-10 h-10 flex items-center justify-center rounded-full bg-black/5 hover:bg-black/10 transition-colors"
+                  aria-label="Copy Link"
+                >
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                  </svg>
+                </button>
+              </div>
             </div>
           </div>
           
-          <div className="mb-10 rounded-lg overflow-hidden shadow-lg relative">
+          {/* Featured image */}
+          <div className="mb-10 rounded-[8px] overflow-hidden shadow-lg relative">
             <div className="relative overflow-hidden" style={{ maxHeight: '500px' }}>
               <img 
                 src={article.image.url} 
@@ -224,7 +241,7 @@ const ArticlePage: React.FC = () => {
               />
             </div>
             {article.image.caption && (
-              <p className="text-sm text-gray-500 italic mt-2 px-4 py-2">{article.image.caption}</p>
+              <p className="text-sm text-gray-600 italic mt-2 px-4 py-2">{article.image.caption}</p>
             )}
           </div>
           
@@ -394,6 +411,15 @@ const ArticlePage: React.FC = () => {
           </div>
         </div>
       </footer>
+      
+      {/* Toast notification */}
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />
+      )}
     </>
   );
 };

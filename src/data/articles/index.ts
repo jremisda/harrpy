@@ -1,9 +1,11 @@
 import { Article } from '../../types';
 import whatIsHarrpy from './what-is-harrpy';
+import howToGetFreeClothesHotelStays from './how-to-get-free-clothes-hotel-stays-creator';
 
 // Add all articles to this array
 export const articles: Article[] = [
   whatIsHarrpy,
+  howToGetFreeClothesHotelStays,
   // Add new articles here
 ];
 

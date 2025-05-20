@@ -180,4 +180,5 @@ export interface ArticleFilters {
   search?: string;
   sortBy?: 'publishedAt' | 'updatedAt' | 'title' | 'readingTime';
   sortOrder?: 'asc' | 'desc';
+  excludeIds?: string[]; // Array of article IDs to exclude from results
 } 

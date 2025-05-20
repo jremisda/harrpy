@@ -68,7 +68,10 @@ const NewsArticles: React.FC<NewsArticlesProps> = ({
         setFeaturedArticles(featuredData);
         
         // Fetch initial articles
-        const articlesResponse = await articleService.getArticles(1, 6);
+        const filters: ArticleFilters = { 
+          excludeIds: featuredData.map(article => article.id) 
+        };
+        const articlesResponse = await articleService.getArticles(1, 6, filters);
         setArticles(articlesResponse.articles);
         setPage(articlesResponse.page);
         setHasMore(articlesResponse.hasMore);
@@ -95,8 +98,10 @@ const NewsArticles: React.FC<NewsArticlesProps> = ({
         const previousArticleIds = new Set(articles.map(a => a.id));
         
         try {
+          // Filter by category AND exclude featured articles to prevent duplication
           const filters: ArticleFilters = {
-            category: selectedCategory
+            category: selectedCategory,
+            excludeIds: featuredArticles.map(article => article.id)
           };
           
           const articlesResponse = await articleService.getArticles(1, 6, filters);
@@ -232,9 +237,11 @@ const NewsArticles: React.FC<NewsArticlesProps> = ({
     setIsLoading(true);
     
     try {
-      const filters: ArticleFilters | undefined = selectedCategory 
-        ? { category: selectedCategory }
-        : undefined;
+      // Create filters including exclusion of featured articles
+      const filters: ArticleFilters = {
+        ...(selectedCategory ? { category: selectedCategory } : {}),
+        excludeIds: featuredArticles.map(article => article.id)
+      };
       
       const nextPage = page + 1;
       const articlesResponse = await articleService.getArticles(nextPage, 6, filters);
@@ -279,6 +286,25 @@ const NewsArticles: React.FC<NewsArticlesProps> = ({
   } else if (featuredArticles.length <= 1) {
     secondaryArticles.push(...recentArticles.slice(1, 3 - secondaryArticles.length));
   }
+
+  // More robust filtering of duplicate articles
+  // Collect ALL articles that could potentially be duplicated
+  const displayedArticles = [
+    ...(firstArticle ? [firstArticle] : []),
+    ...secondaryArticles,
+    ...featuredArticles  // Include all featured articles to be safe
+  ];
+  
+  // Create a set of all displayed article IDs for efficient lookup
+  const displayedArticleIdSet = new Set(displayedArticles.map(a => a.id));
+  
+  // Filter all regular articles to remove any that are already displayed elsewhere
+  const nonDuplicatedArticles = articles.filter(article => !displayedArticleIdSet.has(article.id));
+  
+  // We need to display potentially DIFFERENT articles in older, not just "3 and after"
+  // Calculate how many articles to display in the main grid section based on what's already shown
+  const articlesToSkip = Math.min(nonDuplicatedArticles.length, 3);
+  const filteredOlderArticles = nonDuplicatedArticles.slice(articlesToSkip);
 
   // Check if an article is visible for animation
   const isVisible = (id: string) => visibleItems.has(id);
@@ -360,7 +386,7 @@ const NewsArticles: React.FC<NewsArticlesProps> = ({
                         isVisible(article.id) ? 'visible' : ''
                       }`}
                     >
-                      <div className="h-40 relative">
+                      <div className="h-52 relative">
                         <OptimizedImage 
                           src={article.image.url} 
                           alt={article.image.alt}
@@ -371,19 +397,22 @@ const NewsArticles: React.FC<NewsArticlesProps> = ({
                         </div>
                       </div>
                       
-                      <div className="p-4">
+                      <div className="p-4 flex flex-col h-[calc(100%-13rem)]">
                         <div className="flex items-center space-x-2 mb-1">
                           <p className="text-xs text-gray-500">{new Date(article.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
                           <span className="text-gray-400">•</span>
                           <p className="text-xs text-gray-500">{article.readingTime} min read</p>
                         </div>
                         <h3 className="font-headline text-lg font-bold mb-2">{article.title}</h3>
-                        <Link 
-                          to={`/articles/${article.slug}`} 
-                          className="text-sm font-medium text-black hover:underline transition-all duration-300"
-                        >
-                          Read Article →
-                        </Link>
+                        <p className="text-gray-700 mb-3 line-clamp-3">{article.summary}</p>
+                        <div className="mt-auto">
+                          <Link 
+                            to={`/articles/${article.slug}`} 
+                            className="mt-2 px-4 py-2 bg-transparent text-black font-medium rounded-[4px] border border-black shadow-[0_0_10px_rgba(0,0,0,0.1)] hover:bg-black/5 inline-block transition-all duration-300 ease-bounce"
+                          >
+                            Read More
+                          </Link>
+                        </div>
                       </div>
                     </div>
                   ))}
@@ -392,11 +421,11 @@ const NewsArticles: React.FC<NewsArticlesProps> = ({
             )}
             
             {/* Grid of smaller articles */}
-            {olderArticles.length > 0 && (
+            {filteredOlderArticles.length > 0 && (
               <div className="mt-12">
                 <h3 className="text-2xl font-bold mb-8 animate-in">Latest Articles</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                  {olderArticles.map((article, index) => (
+                  {filteredOlderArticles.map((article, index) => (
                     <div 
                       key={article.id}
                       data-article-id={article.id}
@@ -457,7 +486,7 @@ const NewsArticles: React.FC<NewsArticlesProps> = ({
             )}
             
             {/* Empty state */}
-            {!isLoading && articles.length === 0 && (
+            {!isLoading && articles.length === 0 && !firstArticle && secondaryArticles.length === 0 && (
               <div className="py-16 text-center animate-in">
                 <p className="text-lg text-gray-700 mb-4">No articles found for this category.</p>
                 <button

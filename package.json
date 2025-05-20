@@ -5,13 +5,16 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "npm run generate-sitemap && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "jest",
     "create-article": "node scripts/create-article.js",
     "init-db": "node --loader ts-node/esm --experimental-specifier-resolution=node scripts/init-database.js",
-    "test-db": "node --loader ts-node/esm --experimental-specifier-resolution=node scripts/test-submission.js"
+    "test-db": "node --loader ts-node/esm --experimental-specifier-resolution=node scripts/test-submission.js",
+    "generate-sitemap": "node scripts/generate-sitemap.js",
+    "ping-search-engines": "node scripts/ping-search-engines.js",
+    "update-sitemap": "npm run generate-sitemap && npm run ping-search-engines"
   },
   "dependencies": {
     "@emailjs/browser": "^4.4.1",

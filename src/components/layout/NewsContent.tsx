@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ArticleCategory } from '../../types';
 import NewsArticles from '../sections/NewsArticles';
-import NewsCategories from '../sections/NewsCategories';
+import CategoryButtons from '../sections/CategoryButtons';
 import SEO from '../common/SEO';
 
 export const NewsContent: React.FC = () => {
@@ -94,13 +94,14 @@ export const NewsContent: React.FC = () => {
         </p>
       </div>
       
-      <section id="news-categories" className="mt-8">
-        <NewsCategories 
+      {/* Category buttons - directly below the subheading */}
+      <div className="mt-6">
+        <CategoryButtons 
           categories={categories} 
           selectedCategory={selectedCategory}
           onCategoryChange={handleCategoryChange}
         />
-      </section>
+      </div>
       
       <section id="news-articles" className="mt-0">
         <NewsArticles 
