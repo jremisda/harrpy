@@ -118,6 +118,13 @@ const OptimizedImage: React.FC<OptimizedImageProps> = ({
     `;
   };
 
+  // Set fetchpriority attribute manually
+  useEffect(() => {
+    if (imageRef.current) {
+      imageRef.current.setAttribute('fetchpriority', eager ? 'high' : 'auto');
+    }
+  }, [eager]);
+
   return (
     <div 
       ref={eager ? null : elementRef}
@@ -161,7 +168,6 @@ const OptimizedImage: React.FC<OptimizedImageProps> = ({
               className="w-full h-full object-cover"
               loading={eager ? 'eager' : 'lazy'}
               onLoad={handleImageLoad}
-              fetchPriority={eager ? 'high' : 'auto'}
               decoding="async"
               sizes={sizes}
               {...props}
@@ -199,7 +205,6 @@ const OptimizedImage: React.FC<OptimizedImageProps> = ({
                 loading={eager ? 'eager' : 'lazy'}
                 onLoad={handleImageLoad}
                 onError={handleImageError}
-                fetchPriority={eager ? 'high' : 'auto'}
                 decoding="async"
                 sizes={sizes}
                 {...props}

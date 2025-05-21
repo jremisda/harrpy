@@ -184,7 +184,6 @@ export const NewsContent: React.FC = () => {
       
       {/* Footer */}
       <footer className="w-full px-6 md:px-12 lg:px-24 py-8 mt-4">
-        {/* Line matching the header style */}
         <div className="h-0.5 w-full bg-[#121212] mb-6"></div>
         <div className="flex flex-col md:flex-row justify-between items-center pt-0 relative z-10">
           {/* Logo on the left */}
@@ -199,12 +198,14 @@ export const NewsContent: React.FC = () => {
             <p className="text-black font-medium">Harrpy</p>
           </div>
           
-          {/* Copyright text in center */}
-          <div className="text-sm text-black/60 mb-4 md:mb-0 flex flex-col md:flex-row md:items-center gap-2 md:gap-4">
+          {/* Copyright and policy links centered */}
+          <div className="text-sm text-black/60 mb-4 md:mb-0 flex flex-col items-center gap-2">
             <span>© {new Date().getFullYear()} Harrpy. All rights reserved.</span>
-            <a href="/privacy" className="text-black/40 hover:text-black underline transition-colors duration-200">Privacy Policy</a>
-            <a href="/terms" className="text-black/40 hover:text-black underline transition-colors duration-200">Terms of Use</a>
-            <a href="/cookies" className="text-black/40 hover:text-black underline transition-colors duration-200">Cookie Policy</a>
+            <div className="flex gap-4">
+              <a href="/privacy" className="text-black/40 hover:text-black underline transition-colors duration-200">Privacy Policy</a>
+              <a href="/terms" className="text-black/40 hover:text-black underline transition-colors duration-200">Terms of Use</a>
+              <a href="/cookies" className="text-black/40 hover:text-black underline transition-colors duration-200">Cookie Policy</a>
+            </div>
           </div>
           
           {/* Social Icons on right */}

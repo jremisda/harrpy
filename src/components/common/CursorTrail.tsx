@@ -200,7 +200,7 @@ const CursorTrail: React.FC = () => {
       {/* Trail particles - using a conditional render to limit number of particles */}
       {trailPoints.slice(-15).map((point) => (
         <div
-          key={`trail-${point.id}-${point.timestamp}`}
+          key={`trail-${point.id}`}
           id={`trail-${point.id}`}
           className="cursor-trail"
           style={{

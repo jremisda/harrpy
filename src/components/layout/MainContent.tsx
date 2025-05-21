@@ -51,11 +51,13 @@ export const MainContent: React.FC<MainContentProps> = ({ onEmailSubmit, onOpenW
             />
             <p className="text-black font-medium">Harrpy</p>
           </div>
-          <div className="text-sm text-black/60 mb-4 md:mb-0 flex flex-col md:flex-row md:items-center gap-2 md:gap-4">
+          <div className="text-sm text-black/60 mb-4 md:mb-0 flex flex-col items-center gap-2">
             <span>© {new Date().getFullYear()} Harrpy. All rights reserved.</span>
-            <a href="/privacy" className="text-black/40 hover:text-black underline transition-colors duration-200">Privacy Policy</a>
-            <a href="/terms" className="text-black/40 hover:text-black underline transition-colors duration-200">Terms of Use</a>
-            <a href="/cookies" className="text-black/40 hover:text-black underline transition-colors duration-200">Cookie Policy</a>
+            <div className="flex gap-4">
+              <a href="/privacy" className="text-black/40 hover:text-black underline transition-colors duration-200">Privacy Policy</a>
+              <a href="/terms" className="text-black/40 hover:text-black underline transition-colors duration-200">Terms of Use</a>
+              <a href="/cookies" className="text-black/40 hover:text-black underline transition-colors duration-200">Cookie Policy</a>
+            </div>
           </div>
           <SocialMediaIcons />
         </div>
