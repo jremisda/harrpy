@@ -4,6 +4,7 @@ import { MissionStatement } from '../sections/MissionStatement';
 import { EarlyAccessBenefits } from '../sections/EarlyAccessBenefits';
 import SEO from '../common/SEO';
 import SocialMediaIcons from '../common/SocialMediaIcons';
+import StructuredData from '../common/StructuredData';
 
 interface MainContentProps {
   onEmailSubmit: (email: string) => void;
@@ -16,6 +17,13 @@ export const MainContent: React.FC<MainContentProps> = ({ onEmailSubmit, onOpenW
       <SEO
         title="Harrpy | Swipe. Match. Collab"
         description="Connect with verified creators and local businesses through swipe-to-match collabs. Trusted, fast, and BS-free. Join the waitlist now."
+      />
+      <StructuredData
+        pageType="home"
+        url={typeof window !== 'undefined' ? window.location.origin : 'https://harrpy.com'}
+        title="Harrpy | Swipe. Match. Collab"
+        description="Connect with verified creators and local businesses through swipe-to-match collabs. Trusted, fast, and BS-free. Join the waitlist now."
+        imageUrl="/images/harrpy-social.png"
       />
       
       <HeroCard onEmailSubmit={onEmailSubmit} onOpenWaitlist={onOpenWaitlist} />

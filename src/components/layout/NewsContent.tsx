@@ -4,6 +4,7 @@ import NewsArticles from '../sections/NewsArticles';
 import CategoryButtons from '../sections/CategoryButtons';
 import SEO from '../common/SEO';
 import SocialMediaIcons from '../common/SocialMediaIcons';
+import StructuredData from '../common/StructuredData';
 
 export const NewsContent: React.FC = () => {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -110,6 +111,13 @@ export const NewsContent: React.FC = () => {
       <SEO
         title="News | From the Verified | Harrpy"
         description="The latest from Harrpy. Real stories from inside the scene. No noise. Just what matters."
+      />
+      <StructuredData
+        pageType="news"
+        url={typeof window !== 'undefined' ? window.location.origin + '/news' : 'https://harrpy.com/news'}
+        title="News | From the Verified | Harrpy"
+        description="The latest from Harrpy. Real stories from inside the scene. No noise. Just what matters."
+        imageUrl="/images/harrpy-social.png"
       />
       
       <div className="pt-16 px-6 md:px-12 lg:px-24 overflow-hidden">

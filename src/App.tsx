@@ -16,6 +16,7 @@ import { useLoading } from './context/LoadingContext';
 import NotFoundPage from './components/pages/NotFoundPage';
 import Toast from './components/common/Toast';
 import SocialMediaIcons from './components/common/SocialMediaIcons';
+import StructuredData from './components/common/StructuredData';
 
 // Font preloading helper - simplified approach
 const preloadFonts = () => {
@@ -154,6 +155,14 @@ const ArticlePage: React.FC = () => {
         section={article.category.name}
         tags={article.tags.map(tag => tag.name)}
         siteName="Harrpy | From the Verified"
+      />
+      <StructuredData
+        pageType="article"
+        url={`${window.location.origin}/articles/${article.slug}`}
+        title={article.seo?.title || article.title}
+        description={article.seo?.description || article.summary}
+        imageUrl={article.image.url}
+        article={article}
       />
       
       <div className="pt-4 md:pt-8 px-6 md:px-12 lg:px-24 pb-12">

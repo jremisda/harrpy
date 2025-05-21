@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import SEO from '../common/SEO';
 import OptimizedImage from '../common/OptimizedImage';
 import SocialMediaIcons from '../common/SocialMediaIcons';
+import StructuredData from '../common/StructuredData';
 
 const NotFoundPage: React.FC = () => {
   const navigate = useNavigate();
@@ -23,6 +24,12 @@ const NotFoundPage: React.FC = () => {
         title="Page Not Found | Harrpy"
         description="The page you were looking for could not be found."
         canonical={`${window.location.origin}/404`}
+      />
+      <StructuredData
+        pageType="404"
+        url={typeof window !== 'undefined' ? window.location.origin + '/404' : 'https://harrpy.com/404'}
+        title="Page Not Found | Harrpy"
+        description="The page you were looking for could not be found."
       />
       
       {/* 404 Hero Section (similar to home hero card) */}
