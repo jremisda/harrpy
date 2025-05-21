@@ -15,6 +15,7 @@ import SEO from './components/common/SEO';
 import { useLoading } from './context/LoadingContext';
 import NotFoundPage from './components/pages/NotFoundPage';
 import Toast from './components/common/Toast';
+import SocialMediaIcons from './components/common/SocialMediaIcons';
 
 // Font preloading helper - simplified approach
 const preloadFonts = () => {
@@ -406,9 +407,10 @@ const ArticlePage: React.FC = () => {
             />
             <p className="text-black font-medium">Harrpy</p>
           </div>
-          <div className="text-sm text-black/60">
+          <div className="text-sm text-black/60 mb-4 md:mb-0">
             © {new Date().getFullYear()} Harrpy. All rights reserved.
           </div>
+          <SocialMediaIcons />
         </div>
       </footer>
       

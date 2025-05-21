@@ -3,6 +3,7 @@ import { HeroCard } from '../sections/HeroCard';
 import { MissionStatement } from '../sections/MissionStatement';
 import { EarlyAccessBenefits } from '../sections/EarlyAccessBenefits';
 import SEO from '../common/SEO';
+import SocialMediaIcons from '../common/SocialMediaIcons';
 
 interface MainContentProps {
   onEmailSubmit: (email: string) => void;
@@ -39,9 +40,10 @@ export const MainContent: React.FC<MainContentProps> = ({ onEmailSubmit, onOpenW
             />
             <p className="text-black font-medium">Harrpy</p>
           </div>
-          <div className="text-sm text-black/60">
+          <div className="text-sm text-black/60 mb-4 md:mb-0">
             © {new Date().getFullYear()} Harrpy. All rights reserved.
           </div>
+          <SocialMediaIcons />
         </div>
       </footer>
     </div>

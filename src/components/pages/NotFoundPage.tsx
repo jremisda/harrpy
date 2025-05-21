@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import SEO from '../common/SEO';
 import OptimizedImage from '../common/OptimizedImage';
+import SocialMediaIcons from '../common/SocialMediaIcons';
 
 const NotFoundPage: React.FC = () => {
   const navigate = useNavigate();
@@ -98,9 +99,10 @@ const NotFoundPage: React.FC = () => {
             />
             <p className="text-black font-medium">Harrpy</p>
           </div>
-          <div className="text-sm text-black/60">
+          <div className="text-sm text-black/60 mb-4 md:mb-0">
             © {new Date().getFullYear()} Harrpy. All rights reserved.
           </div>
+          <SocialMediaIcons />
         </div>
       </footer>
     </div>
