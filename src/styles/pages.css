@@ -1,0 +1,64 @@
+/* 
+ * Page-specific styles
+ * This file contains styles for specific pages
+ */
+
+/* NotFoundPage */
+.not-found-hero-text {
+  text-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+/* ArticlePage */
+.article-hero-wrapper {
+  max-height: 500px;
+}
+
+.article-hero-image {
+  transition-property: transform;
+  transition-duration: 100ms;
+  transition-timing-function: ease-out;
+  will-change: transform;
+}
+
+/* News articles grid layout */
+.news-articles-grid {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 2rem;
+}
+
+@media (min-width: 768px) {
+  .news-articles-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .news-articles-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Featured article treatment */
+.featured-article {
+  grid-column: 1 / -1;
+}
+
+@media (min-width: 768px) {
+  .featured-article {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    align-items: center;
+  }
+}
+
+/* Article card hover effects */
+.article-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.article-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+} 

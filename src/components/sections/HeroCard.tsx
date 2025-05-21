@@ -78,6 +78,10 @@ export const HeroCard: React.FC<HeroCardProps> = ({ onEmailSubmit, onOpenWaitlis
         </div>
         
         <div className="relative h-full px-6 py-12 md:p-12 lg:p-16 flex flex-col">
+          {/* Main SEO Heading */}
+          <h1 className="text-black text-4xl md:text-5xl lg:text-6xl font-headline font-black mb-6" style={{textShadow: '0 2px 8px rgba(0,0,0,0.04)'}}>
+            Swipe. Match. Collab. — Connect Creators & Brands Instantly
+          </h1>
           <div className="flex justify-end mb-4">
             <p className="text-black text-lg md:text-xl max-w-md text-right font-medium">
               Where verified creators &<br />
