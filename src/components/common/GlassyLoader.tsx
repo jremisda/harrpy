@@ -12,7 +12,7 @@ const GlassyLoader: React.FC<GlassyLoaderProps> = ({ isLoading }) => {
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#FFF5E9]">
       <div className="spin-animation loader-animation">
         <img 
-          src="/images/harrpy-logo.png" 
+          src="https://tdkqhl7odedylxty.public.blob.vercel-storage.com/harrpy-logo-rl7LZcaL4a4Cldfw48Eq3jYXenBi2d.png" 
           alt="Harrpy" 
           className="w-24 h-24 object-contain"
           loading="eager"

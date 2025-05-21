@@ -20,7 +20,7 @@ export const NewsCategories: React.FC<NewsCategoriesProps> = ({
           {/* Background image */}
           <div className="absolute inset-0 w-full h-full">
             <OptimizedImage 
-              src="/images/news-bg.png" 
+              src="https://tdkqhl7odedylxty.public.blob.vercel-storage.com/news-bg-rxC4r3GUPLav0YpJ1riTQLrjedAMmy.png" 
               alt="News categories background" 
               placeholderColor="#242424"
               eager={true}
