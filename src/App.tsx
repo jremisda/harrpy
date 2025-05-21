@@ -17,6 +17,11 @@ import NotFoundPage from './components/pages/NotFoundPage';
 import Toast from './components/common/Toast';
 import SocialMediaIcons from './components/common/SocialMediaIcons';
 import StructuredData from './components/common/StructuredData';
+import PrivacyPolicy from './components/pages/PrivacyPolicy';
+import TermsOfUse from './components/pages/TermsOfUse';
+import CookiePolicy from './components/pages/CookiePolicy';
+import CookieBanner from './components/common/CookieBanner';
+import CookieSettingsModal from './components/common/CookieSettingsModal';
 
 // Font preloading helper - simplified approach
 const preloadFonts = () => {
@@ -447,11 +452,16 @@ const WaitlistRedirect: React.FC<{ onOpenWaitlist: () => void }> = ({ onOpenWait
   return <Navigate to="/" />;
 };
 
+interface AppProps {
+  analyticsOptIn?: boolean;
+  onAnalyticsOptInChange?: (optIn: boolean) => void;
+}
+
 /**
  * Main App component that serves as the entry point for the Harrpy application.
  * It assembles the primary layout components and decorative elements.
  */
-function App() {
+function App({ analyticsOptIn, onAnalyticsOptInChange }: AppProps) {
   const [fontsLoaded, setFontsLoaded] = useState(false);
   const [pageLoading, setPageLoading] = useState(true);
   const navigate = useNavigate();
@@ -463,6 +473,57 @@ function App() {
   const [isWaitlistOpen, setIsWaitlistOpen] = useState(false);
   const [submittedEmail, setSubmittedEmail] = useState('');
   const [waitlistSuccess, setWaitlistSuccess] = useState(false);
+
+  // Cookie banner state
+  const [showCookieBanner, setShowCookieBanner] = useState(false);
+  const [showCookieSettings, setShowCookieSettings] = useState(false);
+  const [analyticsEnabled, setAnalyticsEnabled] = useState(() => {
+    const stored = localStorage.getItem('harrpy_analytics_opt_in');
+    return stored === null ? true : stored === 'true';
+  });
+
+  useEffect(() => {
+    const consent = localStorage.getItem('harrpy_cookie_consent');
+    let timer: NodeJS.Timeout;
+    if (!consent) {
+      timer = setTimeout(() => {
+        setShowCookieBanner(true);
+      }, 4000);
+    }
+    return () => {
+      if (timer) clearTimeout(timer);
+    };
+  }, []);
+
+  const handleAcceptCookies = () => {
+    localStorage.setItem('harrpy_cookie_consent', 'true');
+    setShowCookieBanner(false);
+  };
+  const handlePrivacySettings = () => {
+    setShowCookieSettings(true);
+    setShowCookieBanner(false);
+  };
+  const handleSaveCookieSettings = (analytics: boolean) => {
+    setAnalyticsEnabled(analytics);
+    localStorage.setItem('harrpy_analytics_opt_in', analytics ? 'true' : 'false');
+    setShowCookieSettings(false);
+    // Optionally, set consent if not already set
+    if (!localStorage.getItem('harrpy_cookie_consent')) {
+      localStorage.setItem('harrpy_cookie_consent', 'true');
+    }
+    if (onAnalyticsOptInChange) {
+      onAnalyticsOptInChange(analytics);
+    }
+    // Dispatch custom event for cross-tab and main.tsx sync
+    window.dispatchEvent(new Event('harrpy_analytics_opt_in_changed'));
+  };
+  const handleCloseCookieSettings = () => {
+    setShowCookieSettings(false);
+    // Optionally, show banner again if consent not set
+    if (!localStorage.getItem('harrpy_cookie_consent')) {
+      setShowCookieBanner(true);
+    }
+  };
 
   // Preload fonts
   useEffect(() => {
@@ -550,6 +611,18 @@ function App() {
       {/* Custom cursor with swirl trail effect */}
       <CursorTrail />
       
+      {/* Cookie Banner */}
+      {showCookieBanner && (
+        <CookieBanner onAccept={handleAcceptCookies} onSettings={handlePrivacySettings} />
+      )}
+      {/* Cookie Settings Modal */}
+      <CookieSettingsModal
+        isOpen={showCookieSettings}
+        onClose={handleCloseCookieSettings}
+        onSave={handleSaveCookieSettings}
+        initialAnalyticsEnabled={analyticsEnabled}
+      />
+
       <div className="relative z-10 flex-grow" id="top">
         <Navbar 
           onNavigate={handleNavigation} 
@@ -571,6 +644,9 @@ function App() {
           <Route path="/news" element={<NewsContent />} />
           <Route path="/articles/:slug" element={<ArticlePage />} />
           <Route path="/waitlist" element={<WaitlistRedirect onOpenWaitlist={handleOpenWaitlist} />} />
+          <Route path="/privacy" element={<PrivacyPolicy />} />
+          <Route path="/terms" element={<TermsOfUse />} />
+          <Route path="/cookies" element={<CookiePolicy />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
         

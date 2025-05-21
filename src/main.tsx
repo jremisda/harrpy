@@ -7,17 +7,47 @@ import { SpeedInsights } from '@vercel/speed-insights/react';
 import App from './App.tsx';
 import './index.css';
 import { LoadingProvider } from './context/LoadingContext';
+import { useEffect, useState } from 'react';
 
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <HelmetProvider>
-      <LoadingProvider>
-        <BrowserRouter>
-          <App />
-          <Analytics />
-          <SpeedInsights />
-        </BrowserRouter>
-      </LoadingProvider>
-    </HelmetProvider>
-  </StrictMode>
-);
+function AnalyticsOptInWrapper({ enabled }: { enabled: boolean }) {
+  if (!enabled) return null;
+  return <>
+    <Analytics />
+    <SpeedInsights />
+  </>;
+}
+
+function Root() {
+  const [analyticsOptIn, setAnalyticsOptIn] = useState(() => {
+    const optIn = localStorage.getItem('harrpy_analytics_opt_in');
+    return optIn === null || optIn === 'true';
+  });
+
+  useEffect(() => {
+    const handler = () => {
+      const optIn = localStorage.getItem('harrpy_analytics_opt_in');
+      setAnalyticsOptIn(optIn === null || optIn === 'true');
+    };
+    window.addEventListener('storage', handler);
+    window.addEventListener('harrpy_analytics_opt_in_changed', handler);
+    return () => {
+      window.removeEventListener('storage', handler);
+      window.removeEventListener('harrpy_analytics_opt_in_changed', handler);
+    };
+  }, []);
+
+  return (
+    <StrictMode>
+      <HelmetProvider>
+        <LoadingProvider>
+          <BrowserRouter>
+            <App analyticsOptIn={analyticsOptIn} onAnalyticsOptInChange={setAnalyticsOptIn} />
+            <AnalyticsOptInWrapper enabled={analyticsOptIn} />
+          </BrowserRouter>
+        </LoadingProvider>
+      </HelmetProvider>
+    </StrictMode>
+  );
+}
+
+createRoot(document.getElementById('root')!).render(<Root />);

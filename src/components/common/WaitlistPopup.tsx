@@ -536,13 +536,16 @@ const WaitlistPopup: React.FC<WaitlistPopupProps> = ({
         
         {/* Footer with copyright */}
         <div className="px-8 py-4 border-t border-black/10 mt-auto flex-shrink-0">
-          <div className="flex items-center justify-center">
+          <div className="flex items-center justify-center gap-2">
             <img 
               src="/images/harrpy-logo.png" 
               alt="Harrpy Logo" 
               className="h-5 w-auto mr-1.5"
             />
             <p className="text-center text-black/40 text-sm font-medium">{new Date().getFullYear()}</p>
+            <a href="/privacy" className="text-black/40 hover:text-black underline transition-colors duration-200 text-xs">Privacy Policy</a>
+            <a href="/terms" className="text-black/40 hover:text-black underline transition-colors duration-200 text-xs">Terms of Use</a>
+            <a href="/cookies" className="text-black/40 hover:text-black underline transition-colors duration-200 text-xs">Cookie Policy</a>
           </div>
         </div>
       </div>
