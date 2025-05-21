@@ -1,10 +1,24 @@
-# Harrpy - Healthcare AI Platform
+# Harrpy - Swipe. Match. Collab.
 
-A modern landing page for Harrpy, an AI platform built by clinicians to transform the administrative burden faced by healthcare payers.
+A modern platform that connects creators with brands for direct, effortless collaborations.
 
-## Project Overview
+## What is Harrpy?
 
-Harrpy is an AI-powered clinical co-pilot designed for every administrative workflow a clinician needs to perform. This repository contains the landing page showcasing Harrpy's mission and features.
+Harrpy is a swipe-based collaboration platform that connects creators with brands, agencies, and businesses that want to work together — directly, instantly, and without middlemen.
+
+It combines the intuitive user experience of apps like Tinder with the efficiency of a creator marketplace. Both sides swipe, match, and start collaborating without lengthy back-and-forth or unnecessary gatekeepers.
+
+### For Creators
+
+Harrpy provides a centralized space to find real, no-BS brand opportunities — whether you're a micro influencer, model, UGC creator, photographer, or freelance content producer. No ghosting, no endless pitching. Just verified opportunities and instant matches.
+
+### For Brands
+
+Harrpy eliminates the agency layer and streamlines how you source talent — whether you're a boutique hotel, fashion label, café, gym, or property manager. Post a collab brief, browse a curated list of nearby creators, and connect directly.
+
+Whether you're a creator looking to land your next collab or a business looking to generate fresh content fast — Harrpy is where collaboration happens.
+
+It's not another UGC tool. It's a full-spectrum creator-brand connection engine — fast, direct, and built for the new economy.
 
 ## Tech Stack
 
