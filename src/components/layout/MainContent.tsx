@@ -43,11 +43,11 @@ export const MainContent: React.FC<MainContentProps> = ({ onEmailSubmit, onOpenW
         <div className="h-0.5 w-full bg-[#121212] mb-6"></div>
         <div className="flex flex-col md:flex-row justify-between items-center pt-0 relative z-10">
           <div className="flex items-center mb-4 md:mb-0">
-            <OptimizedImage 
+            <img 
               src="/images/harrpy-logo.png" 
               alt="Harrpy Logo" 
               className="h-10 w-auto mr-2"
-              eager={false}
+              loading="eager"
             />
             <p className="text-black font-medium">Harrpy</p>
           </div>

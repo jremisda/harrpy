@@ -1,6 +1,5 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import OptimizedImage from '../common/OptimizedImage';
 
 interface NavbarProps {
   onNavigate: (view: string) => void;
@@ -50,11 +49,11 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView, onOpenW
             onClick={scrollToTop}
           >
             <div className="h-12 md:h-16 w-auto mr-0.5 md:mr-1">
-              <OptimizedImage 
+              <img 
                 src="/images/harrpy-logo.png" 
                 alt="Harrpy Logo" 
                 className="h-full w-auto"
-                eager={false}
+                loading="eager"
               />
             </div>
             <div className="text-2xl md:text-3xl font-bold font-headline">Harrpy</div>
