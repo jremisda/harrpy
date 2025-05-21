@@ -38,7 +38,7 @@ const NotFoundPage: React.FC = () => {
           {/* Image background */}
           <div className="absolute inset-0 w-full h-full">
             <OptimizedImage 
-              src="https://tdkqhl7odedylxty.public.blob.vercel-storage.com/hero-background-dl8bwgQxeGXnbPXYbD4YH3M02j88XC.png" 
+              src="/images/hero-background.png" 
               alt="404 background"
               eager={true}
               placeholderColor="#f4e9db"
@@ -100,7 +100,7 @@ const NotFoundPage: React.FC = () => {
         <div className="flex flex-col md:flex-row justify-between items-center pt-0 relative z-10">
           <div className="flex items-center mb-4 md:mb-0">
             <img 
-              src="https://tdkqhl7odedylxty.public.blob.vercel-storage.com/harrpy-logo-rl7LZcaL4a4Cldfw48Eq3jYXenBi2d.png" 
+              src="/images/harrpy-logo.png" 
               alt="Harrpy Logo" 
               className="h-10 w-auto mr-2"
               loading="eager"

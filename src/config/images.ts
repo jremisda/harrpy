@@ -7,16 +7,16 @@ export const IMAGE_CONFIG: ImageProcessingConfig = {
     lg: { width: 1920, height: null, suffix: '' },
   },
   quality: {
-    avif: { quality: 65 },
-    webp: { quality: 80 },
-    jpeg: { quality: 85 },
-    png: { quality: 85 },
+    avif: { quality: 50 },
+    webp: { quality: 75 },
+    jpeg: { quality: 80 },
+    png: { quality: 80 },
   },
   placeholder: {
     width: 20,
     height: 20,
     blur: 5,
-    quality: 60,
+    quality: 40,
   },
 };
 

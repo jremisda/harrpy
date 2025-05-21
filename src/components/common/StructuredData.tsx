@@ -25,7 +25,7 @@ const StructuredData: React.FC<StructuredDataProps> = ({
     '@type': 'Organization',
     'name': 'Harrpy',
     'url': 'https://harrpy.com',
-    'logo': 'https://harrpy.com/images/harrpy-logo.png',
+    'logo': 'https://tdkqhl7odedylxty.public.blob.vercel-storage.com/harrpy-logo-rI7LZcaL4a4CIdfw48Eq3jYXenBi2d.png',
     'sameAs': [
       'https://twitter.com/harrpy',
       'https://instagram.com/harrpy',
@@ -89,7 +89,7 @@ const StructuredData: React.FC<StructuredDataProps> = ({
             'name': 'Harrpy',
             'logo': {
               '@type': 'ImageObject',
-              'url': 'https://harrpy.com/images/harrpy-logo.png'
+              'url': 'https://tdkqhl7odedylxty.public.blob.vercel-storage.com/harrpy-logo-rI7LZcaL4a4CIdfw48Eq3jYXenBi2d.png'
             }
           },
           'mainEntityOfPage': {

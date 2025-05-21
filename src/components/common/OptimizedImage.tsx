@@ -38,7 +38,7 @@ const OptimizedImage: React.FC<OptimizedImageProps> = ({
   // Use lazy loading hook unless eager loading is specified
   const { elementRef, isVisible } = useLazyLoad<HTMLDivElement>({
     once: true,
-    rootMargin: '300px 0px', // Increased margin to preload images sooner
+    rootMargin: '500px 0px', // Increased margin for earlier preloading
   });
 
   // Always render eagerly loaded images
@@ -47,7 +47,7 @@ const OptimizedImage: React.FC<OptimizedImageProps> = ({
   // Check if the source is an external URL
   const isExternalUrl = src.startsWith('http://') || src.startsWith('https://');
   
-  // If external URL, use it directly
+  // If external URL, use it directly with optimized loading
   if (isExternalUrl) {
     const handleImageLoad = () => {
       requestAnimationFrame(() => {
@@ -229,6 +229,7 @@ const OptimizedImage: React.FC<OptimizedImageProps> = ({
               className="w-full h-full object-cover"
               loading={eager ? 'eager' : 'lazy'}
               onLoad={handleImageLoad}
+              onError={handleImageError}
               decoding="async"
               sizes={sizes}
               {...props}

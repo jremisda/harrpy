@@ -189,7 +189,7 @@ export const NewsContent: React.FC = () => {
           {/* Logo on the left */}
           <div className="flex items-center mb-4 md:mb-0">
             <img 
-              src="https://tdkqhl7odedylxty.public.blob.vercel-storage.com/harrpy-logo-rl7LZcaL4a4Cldfw48Eq3jYXenBi2d.png" 
+              src="/images/harrpy-logo.png" 
               alt="Harrpy Logo" 
               className="h-10 w-auto mr-2"
               loading="lazy"

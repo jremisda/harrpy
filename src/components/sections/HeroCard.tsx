@@ -68,7 +68,7 @@ export const HeroCard: React.FC<HeroCardProps> = ({ onEmailSubmit, onOpenWaitlis
         {/* Image background */}
         <div className="absolute inset-0 w-full h-full">
           <OptimizedImage 
-            src="https://tdkqhl7odedylxty.public.blob.vercel-storage.com/hero-background-dl8bwgQxeGXnbPXYbD4YH3M02j88XC.png" 
+            src="https://tdkqhl7odedylxty.public.blob.vercel-storage.com/hero-background-dI8bwgQxeGXnbPXYbD4YH3M02j88XC.png" 
             alt="Hero background"
             eager={true} // This is above the fold, so load eagerly
             placeholderColor="#f4e9db"

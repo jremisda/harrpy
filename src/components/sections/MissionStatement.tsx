@@ -35,7 +35,7 @@ export const MissionStatement: React.FC = () => {
           <div className="w-full md:w-1/2 flex items-stretch">
             <div className="w-full h-full rounded-[24px] overflow-hidden flex-1">
               <OptimizedImage 
-                src="https://tdkqhl7odedylxty.public.blob.vercel-storage.com/bali-bg-WbsyOV3nPEB2GMyPnXm2IaqrDQJ38r.png" 
+                src="https://tdkqhl7odedylxty.public.blob.vercel-storage.com/bali-bg-WbsyOV3nPEB2GMyPnXm2laqrDQJ38r.png" 
                 alt="Bali creative scene" 
                 placeholderColor="#e9dbcd"
                 style={{ height: '100%', objectFit: 'cover' }}
