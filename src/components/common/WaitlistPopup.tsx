@@ -249,7 +249,7 @@ const WaitlistPopup: React.FC<WaitlistPopupProps> = ({
     <div className="fixed inset-0 flex justify-end z-50 bg-black/30 backdrop-blur-sm">
       <div 
         ref={popupRef}
-        className="w-full max-w-md h-full bg-[#FFF5E9] shadow-lg transform transition-transform duration-300 ease-in-out overflow-y-auto flex flex-col"
+        className="w-full max-w-md h-full bg-[#FFF5E9] shadow-lg transform transition-transform duration-300 ease-in-out overflow-y-auto flex flex-col rounded-l-[32px]"
         style={{ 
           boxShadow: '-8px 0 30px rgba(0, 0, 0, 0.15)'
         }}
