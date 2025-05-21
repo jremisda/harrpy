@@ -14,9 +14,10 @@ interface MainContentProps {
 export const MainContent: React.FC<MainContentProps> = ({ onEmailSubmit, onOpenWaitlist }) => {
   return (
     <div className="w-full min-h-screen overflow-x-hidden">
+      <h1 className="sr-only">Find Brand Deals. Hire Influencers. Collaborate Instantly.</h1>
       <SEO
-        title="Harrpy | Swipe. Match. Collab"
-        description="Connect with verified creators and local businesses through swipe-to-match collabs. Trusted, fast, and BS-free. Join the waitlist now."
+        title="Harrpy | Creator Collaboration Platform & Influencer App for Brand Deals"
+        description="Harrpy is the creator collaboration platform and influencer collaboration app for brand deals. Hire influencers for campaigns or swipe to match with creators—fast, direct, and verified."
       />
       <StructuredData
         pageType="home"

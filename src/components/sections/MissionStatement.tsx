@@ -14,26 +14,31 @@ export const MissionStatement: React.FC = () => {
             
             <div className="space-y-8 text-lg md:text-xl text-gray-600">
               <p>
-                This is where Harrpy swipes in first. Verified creators and serious businesses connect instantly through a clean swipe to match flow. No ghosting. No middlemen. A fast way to discover local creative collabs that actually go somewhere.
+                This is where Harrpy swipes in. A next-gen creator collaboration platform where verified influencers, models, and content creators connect instantly with brands, agencies, and local businesses. No ghosting. No middlemen. Just a clean, swipe-to-match flow that gets you real results. Fast. Local creative collabs. Paid brand deals. No time wasted.
               </p>
               
               <p>
-                Forget cold DMs and overpriced agencies. Harrpy makes finding your next shoot, content partner, or creative project simple and verified. Every user is vetted. Creators show ID. Businesses upload legit documents. Payments and contracts? That's between you. Harrpy just makes the match.
+                We're launching first in Bali — the epicenter of creators, brands, and bold ideas. Whether you're a travel influencer, lifestyle creator, or a boutique hotel owner, Harrpy connects you to the right people for photoshoots, content campaigns, and social media collabs right where you are.
+              </p>
+              
+              <p>
+                Forget cold DMs and overpriced influencer agencies. This is simpler. Smoother. Fully verified. Creators show ID. Businesses submit real docs. No platform fees. No commission cuts. Payments and contracts? That's between you. Harrpy just gets you in the room.
               </p>
               
               <p className="font-medium">
-                When the work is done, your profile speaks for itself, with private ratings and public badges that actually matter. <span className="font-bold text-black">Harrpy makes fast feel safe. And the right match could last a career. This is creative work, reworked.</span>
+                When the work's done, your Harrpy profile becomes your creative resume complete with private ratings and public trust badges that actually mean something. Whether you're a micro influencer, emerging model, or social media creator, Harrpy helps you build a verified track record that opens more doors. Harrpy makes fast feel safe. And the right match could last a career. Creative work, reworked. Fast. Trusted. Built for Bali and beyond.
               </p>
             </div>
           </div>
           
           {/* Right column - Image */}
-          <div className="w-full md:w-1/2 h-[400px] md:h-[500px]">
-            <div className="w-full h-full rounded-[24px] overflow-hidden">
+          <div className="w-full md:w-1/2 flex items-stretch">
+            <div className="w-full h-full rounded-[24px] overflow-hidden flex-1">
               <OptimizedImage 
                 src="/images/bali-bg.png" 
                 alt="Bali creative scene" 
                 placeholderColor="#e9dbcd"
+                style={{ height: '100%', objectFit: 'cover' }}
               />
             </div>
           </div>
