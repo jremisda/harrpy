@@ -144,7 +144,10 @@ const NewsArticles: React.FC<NewsArticlesProps> = ({
 
   // Start animation after component is mounted
   useEffect(() => {
-    const timer = setTimeout(() => {
+    if (isLoading) return; // Don't start animations while loading
+    
+    // Use requestAnimationFrame for better paint timing
+    requestAnimationFrame(() => {
       setAnimated(true);
       
       // Start staggered item animations after main container is visible
@@ -154,60 +157,130 @@ const NewsArticles: React.FC<NewsArticlesProps> = ({
           ...(featuredArticles.map(a => a.id)),
           ...(articles.map(a => a.id))
         ]);
-        setVisibleItems(prevItems => {
-          // Merge with previous items instead of replacing them
-          return new Set([...prevItems, ...allIds]);
+        
+        requestAnimationFrame(() => {
+          setVisibleItems(prevItems => {
+            // Merge with previous items instead of replacing them
+            return new Set([...prevItems, ...allIds]);
+          });
         });
-      }, 300);
-    }, 300);
+      }, 200); // Reduced delay for faster initial rendering
+    });
     
-    return () => clearTimeout(timer);
-  }, [articles, featuredArticles]);
-
-  // Set up intersection observer for scrolling animations
+  }, [articles, featuredArticles, isLoading]);
+  
+  // Handle article filtering effects
   useEffect(() => {
-    if (!gridRef.current) return;
+    if (isTransitioning && !isLoading) {
+      // Use requestAnimationFrame to ensure smooth animation
+      const transitionTimer = setTimeout(() => {
+        requestAnimationFrame(() => {
+          setIsTransitioning(false);
+        });
+      }, 250); // Shorter transition time
+      
+      return () => clearTimeout(transitionTimer);
+    }
+  }, [isTransitioning, isLoading]);
+
+  // Set up intersection observer for scrolling animations - heavily optimized
+  useEffect(() => {
+    if (!gridRef.current || isTransitioning) return;
     
-    const options = {
-      root: null,
-      rootMargin: '0px 0px -10% 0px', // Trigger a bit before elements come into view
-      threshold: 0.1 // Trigger when at least 10% is visible
+    // Pre-mark all visible items immediately to prevent flickering
+    const preMarkVisible = () => {
+      if (!gridRef.current) return;
+      
+      const articleElements = gridRef.current.querySelectorAll('[data-article-id]');
+      const newIds: string[] = [];
+      
+      articleElements.forEach(el => {
+        const rect = el.getBoundingClientRect();
+        const isInViewport = 
+          rect.top < (window.innerHeight + 300) &&
+          rect.bottom > -100 &&
+          rect.left < window.innerWidth &&
+          rect.right > 0;
+        
+        const id = el.getAttribute('data-article-id');
+        if (id && isInViewport && !visibleItems.has(id) && !el.classList.contains('visible')) {
+          el.classList.add('visible');
+          newIds.push(id);
+        }
+      });
+      
+      // Batch update state once for all new IDs
+      if (newIds.length > 0) {
+        setVisibleItems(prev => {
+          const newSet = new Set(prev);
+          newIds.forEach(id => newSet.add(id));
+          return newSet;
+        });
+      }
     };
     
-    const handleIntersect = (entries: IntersectionObserverEntry[]) => {
+    // Immediately mark items in viewport
+    preMarkVisible();
+    
+    // Use a much more lightweight observer configuration
+    const options = {
+      root: null,
+      rootMargin: '300px 0px', // Much larger margin to preload animations
+      threshold: 0.01 // Almost immediately visible
+    };
+    
+    // Use a single observer instance for better performance
+    const handleIntersect = (entries: IntersectionObserverEntry[], observer: IntersectionObserver) => {
+      // Batch update for multiple entries
+      const newIds: string[] = [];
+      
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           const id = entry.target.getAttribute('data-article-id');
-          if (id) {
-            // Once an item is visible, it stays visible
-            setVisibleItems(prev => {
-              const newItems = new Set(prev);
-              newItems.add(id);
-              return newItems;
-            });
-            
-            // Add a persistent visible class to ensure it stays visible
+          if (id && !visibleItems.has(id)) {
             entry.target.classList.add('visible');
+            newIds.push(id);
+            observer.unobserve(entry.target);
           }
         }
       });
+      
+      // Single state update for all new IDs
+      if (newIds.length > 0) {
+        setVisibleItems(prev => {
+          const newSet = new Set(prev);
+          newIds.forEach(id => newSet.add(id));
+          return newSet;
+        });
+      }
     };
     
     const observer = new IntersectionObserver(handleIntersect, options);
     
-    // Observe all article cards
+    // Only observe elements that aren't already visible
     const articleElements = gridRef.current.querySelectorAll('[data-article-id]');
     articleElements.forEach(el => {
-      // If already visible in our state, add the class right away
       const id = el.getAttribute('data-article-id');
-      if (id && visibleItems.has(id)) {
-        el.classList.add('visible');
+      if (id && !el.classList.contains('visible') && !visibleItems.has(id)) {
+        observer.observe(el);
       }
-      
-      observer.observe(el);
     });
     
-    return () => observer.disconnect();
+    // Add scroll handler for fallback visibility detection
+    const handleScroll = () => {
+      if (window.requestAnimationFrame) {
+        window.requestAnimationFrame(preMarkVisible);
+      } else {
+        preMarkVisible();
+      }
+    };
+    
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('scroll', handleScroll);
+    };
   }, [articles, isTransitioning, visibleItems]);
 
   const handleCategoryChange = (categorySlug: string | null) => {

@@ -209,175 +209,56 @@
   animation: float-fast 10s ease-in-out infinite;
 }
 
-/* Hide default cursor when custom cursor is active */
+/* Remove cursor animations entirely - likely causing lag */
 html, body {
-  cursor: none !important;
+  cursor: auto !important;
 }
 
-/* Add exceptions for clickable elements to show a different cursor style */
 a, button, input, select, textarea, [role="button"], label, .clickable {
-  cursor: none !important;
+  cursor: pointer !important;
 }
 
-/* Cursor trail animations - simplified and optimized */
-@keyframes fade-scale {
-  0% {
-    opacity: 0.7;
-    transform: translate(-50%, -50%) scale(0.3);
-  }
-  100% {
-    opacity: 0;
-    transform: translate(-50%, -50%) scale(1.2);
-  }
+/* Delete cursor animation blocks that are causing performance issues */
+.cursor-dot, .cursor-trail, .cursor-shimmer {
+  display: none !important;
 }
 
-@keyframes trail-distort {
-  0% {
-    border-radius: 40% 60% 70% 30% / 40% 40% 60% 60%;
-  }
-  100% {
-    border-radius: 40% 60% 70% 30% / 40% 40% 60% 60%;
-  }
-}
-
-@keyframes glow-pulse {
-  0% {
-    filter: brightness(1) blur(3px);
-  }
-  100% {
-    filter: brightness(1.1) blur(4px);
-  }
-}
-
-/* Performance optimized cursor styles */
-.cursor-dot {
-  pointer-events: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 8px;
-  height: 8px;
-  background-color: rgba(243, 161, 70, 0.5);
-  backdrop-filter: blur(1px);
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 9999;
-  transition: width 0.1s, height 0.1s;
-  will-change: transform, width, height;
-}
-
-.cursor-trail {
-  pointer-events: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  background-color: #F3A146;
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
-  mix-blend-mode: screen;
-  z-index: 9998;
-  animation: fade-scale 1.5s ease-out forwards;
-  will-change: transform, opacity;
-}
-
-.cursor-shimmer {
-  pointer-events: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  background: radial-gradient(circle, #F3A146 0%, #6FA5EE 70%, transparent 100%);
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
-  mix-blend-mode: screen;
-  filter: blur(3px);
-  opacity: 0.4;
-  z-index: 9997;
-  will-change: transform, width, height;
-}
-
-/* Enhanced accessibility for reduced motion preferences */
-@media (prefers-reduced-motion: reduce) {
-  /* Base animations */
-  .animate-blob,
-  .animate-bounce-down,
-  .animate-fade-in,
-  .animate-float-slow,
-  .animate-float-medium,
-  .animate-float-fast,
-  .stagger-item,
-  .page-enter,
-  .page-exit,
-  .animate-in,
-  .news-grid-item {
-    animation: none !important;
-    transition: none !important;
-    transform: none !important;
-    opacity: 1 !important;
-  }
-  
-  /* Transitions */
-  * {
-    transition-duration: 0.001ms !important;
-    animation-duration: 0.001ms !important;
-  }
-  
-  /* Hover effects - keep subtle hover effects but remove transforms */
-  .hover-lift:hover {
-    transform: none !important;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1) !important;
-  }
-  
-  /* Custom cursor */
-  .cursor-dot,
-  .cursor-trail,
-  .cursor-shimmer {
-    display: none !important;
-  }
-  
-  /* Reset cursor to default */
-  html, body, 
-  a, button, input, select, textarea, [role="button"], label, .clickable {
-    cursor: auto !important;
-  }
-}
-
-/* Animate-in effect for elements coming into view */
-@keyframes slide-up-fade-in {
-  0% {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.animate-in {
-  animation: slide-up-fade-in 0.8s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
-}
-
-/* Improved staggered animations for news grid */
+/* Super-optimize animations for news grid with content-visibility */
 .news-grid {
   position: relative;
+  contain: layout style paint;
+  content-visibility: auto;
+  contain-intrinsic-size: 500px;
 }
 
 .news-grid-item {
   opacity: 0;
-  transform: translateY(30px);
-  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
-              transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-  will-change: opacity, transform;
+  transform: translateY(30px) translate3d(0,0,0);
+  transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, opacity;
+  contain: layout paint style;
+  backface-visibility: hidden;
+  transform-style: preserve-3d;
+  -webkit-font-smoothing: subpixel-antialiased;
+  content-visibility: auto;
+  contain-intrinsic-size: 400px;
 }
 
 .news-grid-item.visible {
   opacity: 1;
-  transform: translateY(0);
+  transform: translateY(0) translate3d(0,0,0);
   visibility: visible !important;
-  /* Ensure the animation never reverts */
-  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
-              transform 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+  transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.5s cubic-bezier(0.16, 1, 0.3, 1),
               visibility 0s linear 0s;
+  will-change: auto; /* Reset will-change after animation completes */
+}
+
+/* Animation play state utilities */
+.animations-paused {
+  animation-timeline: none !important;
+  scroll-timeline: none !important;
 }
 
 /* Animations should never revert once applied */
@@ -385,16 +266,14 @@ a, button, input, select, textarea, [role="button"], label, .clickable {
   opacity: 1 !important;
   transform: translateY(0) !important;
   visibility: visible !important;
+  transition: none !important; /* Prevent any transitions from reverting the state */
 }
 
-/* Delay modifiers for staggered animations */
+/* Delay modifiers for staggered animations - optimized to use fewer unique delays */
 .delay-0 { transition-delay: 0s; }
-.delay-1 { transition-delay: 0.1s; }
-.delay-2 { transition-delay: 0.2s; }
-.delay-3 { transition-delay: 0.3s; }
-.delay-4 { transition-delay: 0.4s; }
-.delay-5 { transition-delay: 0.5s; }
-.delay-6 { transition-delay: 0.6s; }
+.delay-1, .delay-2 { transition-delay: 0.1s; }
+.delay-3, .delay-4 { transition-delay: 0.2s; }
+.delay-5, .delay-6 { transition-delay: 0.3s; }
 
 /* More natural easing curves */
 .ease-natural-out {
