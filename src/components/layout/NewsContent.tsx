@@ -5,6 +5,7 @@ import CategoryButtons from '../sections/CategoryButtons';
 import SEO from '../common/SEO';
 import SocialMediaIcons from '../common/SocialMediaIcons';
 import StructuredData from '../common/StructuredData';
+import OptimizedImage from '../common/OptimizedImage';
 
 export const NewsContent: React.FC = () => {
   const [isLoaded, setIsLoaded] = useState(false);

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import OptimizedImage from '../common/OptimizedImage';
 
 type UserType = 'creator' | 'business' | null;
 

@@ -18,7 +18,7 @@ export const MissionStatement: React.FC = () => {
               </p>
               
               <p>
-                We're launching first in Bali — the epicenter of creators, brands, and bold ideas. Whether you're a travel influencer, lifestyle creator, or a boutique hotel owner, Harrpy connects you to the right people for photoshoots, content campaigns, and social media collabs right where you are.
+                We're launching first in Bali, the epicenter of creators, brands, and bold ideas. Whether you're a travel influencer, lifestyle creator, or a boutique hotel owner, Harrpy connects you to the right people for photoshoots, content campaigns, and social media collabs right where you are.
               </p>
               
               <p>
