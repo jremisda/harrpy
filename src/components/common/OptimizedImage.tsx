@@ -44,6 +44,67 @@ const OptimizedImage: React.FC<OptimizedImageProps> = ({
   // Always render eagerly loaded images
   const shouldRender = eager || isVisible;
 
+  // Check if the source is an external URL
+  const isExternalUrl = src.startsWith('http://') || src.startsWith('https://');
+  
+  // If external URL, use it directly
+  if (isExternalUrl) {
+    const handleImageLoad = () => {
+      requestAnimationFrame(() => {
+        setIsLoaded(true);
+      });
+    };
+
+    return (
+      <div 
+        ref={eager ? null : elementRef}
+        className={`optimized-image-container ${className || ''}`}
+        style={{ 
+          position: 'relative',
+          width: '100%',
+          height: '100%',
+          overflow: 'hidden',
+          backgroundColor: placeholderColor,
+          contain: 'layout',
+        }}
+      >
+        <div 
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            backgroundColor: placeholderColor,
+            zIndex: 0
+          }}
+        />
+        
+        {shouldRender && (
+          <div 
+            className="absolute inset-0 z-1"
+            style={{
+              opacity: isLoaded ? 1 : 0,
+              transition: 'opacity 0.2s ease-out',
+            }}
+          >
+            <img
+              ref={imageRef}
+              src={src}
+              alt={alt}
+              className="w-full h-full object-cover"
+              loading={eager ? 'eager' : 'lazy'}
+              onLoad={handleImageLoad}
+              decoding="async"
+              sizes={sizes}
+              {...props}
+            />
+          </div>
+        )}
+      </div>
+    );
+  }
+
   // Extract the file name without extension
   const getBaseName = (path: string) => {
     // Extract just the filename
