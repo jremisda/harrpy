@@ -539,7 +539,7 @@ const WaitlistPopup: React.FC<WaitlistPopupProps> = ({
           <div className="h-0.5 w-full bg-[#121212] mb-6"></div>
           <div className="flex items-center justify-center gap-2">
             <img 
-              src="https://tdkqhl7odedylxty.public.blob.vercel-storage.com/harrpy-logo-rI7LZcaL4a4CIdfw48Eq3jYXenBi2d.png" 
+              src="https://tdkqhl7odedylxty.public.blob.vercel-storage.com/website/harrpy-logo-IGmUpxKDo70m3qKI37igR2ZtKxwYqP.webp" 
               alt="Harrpy Logo" 
               className="h-5 w-auto mr-1.5"
             />

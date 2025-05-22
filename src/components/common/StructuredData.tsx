@@ -25,7 +25,7 @@ const StructuredData: React.FC<StructuredDataProps> = ({
     '@type': 'Organization',
     'name': 'Harrpy',
     'url': 'https://harrpy.com',
-    'logo': 'https://tdkqhl7odedylxty.public.blob.vercel-storage.com/harrpy-logo-rI7LZcaL4a4CIdfw48Eq3jYXenBi2d.png',
+    'logo': 'https://tdkqhl7odedylxty.public.blob.vercel-storage.com/website/harrpy-logo-IGmUpxKDo70m3qKI37igR2ZtKxwYqP.webp',
     'sameAs': [
       'https://twitter.com/harrpy',
       'https://instagram.com/harrpy',

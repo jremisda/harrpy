@@ -35,7 +35,7 @@ export const EarlyAccessBenefits: React.FC = () => {
               }`}
             >
               <OptimizedImage 
-                src="https://tdkqhl7odedylxty.public.blob.vercel-storage.com/early-access-background-TgpHKNVOQSvmapTESCC3hFj82bEF7A.png" 
+                src="https://tdkqhl7odedylxty.public.blob.vercel-storage.com/website/early-access-background-NogUz6sZtaRKbxnzh5SDVAJnKtUDLs.webp" 
                 alt="Early access background" 
                 placeholderColor="#242424"
               />
@@ -48,7 +48,7 @@ export const EarlyAccessBenefits: React.FC = () => {
               }`}
             >
               <OptimizedImage 
-                src="https://tdkqhl7odedylxty.public.blob.vercel-storage.com/business-button-bg-MODye75QoPYJDfNZu9k30NL9sUS4cv.png" 
+                src="https://tdkqhl7odedylxty.public.blob.vercel-storage.com/website/business-button-bg-oFxlVHQHJ0UMDUOZ2eLHZwExBuOTNe.webp" 
                 alt="Business background" 
                 placeholderColor="#242424"
               />

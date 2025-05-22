@@ -121,7 +121,7 @@ export const NewsContent: React.FC = () => {
         imageUrl="/images/harrpy-social.png"
       />
       
-      <div className="pt-12 pb-12 px-6 md:px-12 lg:px-24 overflow-hidden">
+      <div className="pt-12 pb-6 px-6 md:px-12 lg:px-24 overflow-hidden">
         <h1 
           ref={headingRef}
           className={`font-headline text-7xl md:text-8xl lg:text-9xl font-black leading-[0.9] tracking-tight max-w-full transition-all duration-500 ease-out transform ${
@@ -137,14 +137,14 @@ export const NewsContent: React.FC = () => {
         >
           From the Verified
           <img 
-            src="https://tdkqhl7odedylxty.public.blob.vercel-storage.com/verfi-orange-leMibvq005y5sk7UGigj2tpU8xUnoh.png"
+            src="https://tdkqhl7odedylxty.public.blob.vercel-storage.com/website/verfi-orange-fnJKAwNZ5FV6Qc4R39tsSqKm90LA0N.webp"
             alt="Verified Checkmark"
             className="inline-block h-[0.7em] w-auto ml-1 align-top"
             style={{ marginTop: '-0.2em' }}
           />
         </h1>
         <p 
-          className={`text-xl text-gray-700 max-w-3xl mt-2 transition-all duration-500 ease-out transform ${
+          className={`text-xl text-gray-700 max-w-3xl mt-1 mb-0 transition-all duration-500 ease-out transform ${
             headingVisible 
             ? 'translate-y-0 opacity-100 delay-100' 
             : 'translate-y-10 opacity-0'
@@ -161,9 +161,9 @@ export const NewsContent: React.FC = () => {
       
       {/* Category buttons - directly below the subheading */}
       <div 
-        className={`mt-2 transition-all duration-500 ease-out transform ${
+        className={`-mt-2 transition-all duration-500 ease-out transform ${
           headingVisible 
-          ? 'translate-y-0 opacity-100 delay-200' 
+          ? 'translate-y-0 opacity-100 delay-150' 
           : 'translate-y-10 opacity-0'
         }`}
         style={{ 

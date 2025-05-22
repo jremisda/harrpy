@@ -74,7 +74,7 @@ const article: Article = {
   content,
   publishedAt: '2025-03-20T10:00:00Z',
   image: {
-    url: 'https://tdkqhl7odedylxty.public.blob.vercel-storage.com/articles/2-blog-PSB0RwPyqTVXN5Gw211SF3REYZot8C.png',
+    url: 'https://tdkqhl7odedylxty.public.blob.vercel-storage.com/articles/2-blog-VHBjlom1M8naCHEzILYrdKxP4ztPIQ.webp',
     alt: 'Content Creator with Free Clothes and Hotel Stay',
     caption: 'Learn how to secure legitimate brand collaborations as a content creator'
   },

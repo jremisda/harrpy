@@ -13,7 +13,7 @@ const CategoryButtons: React.FC<CategoryButtonsProps> = ({
   onCategoryChange 
 }) => {
   return (
-    <div className="px-6 md:px-12 lg:px-24 pt-4 pb-6">
+    <div className="px-6 md:px-12 lg:px-24 pt-0 pb-5">
       {/* Category filters with styled buttons */}
       <div className="flex flex-wrap gap-3">
         <button 

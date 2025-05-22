@@ -80,7 +80,7 @@ const article: Article = {
   content,
   publishedAt: '2025-03-15T10:00:00Z',
   image: {
-    url: 'https://tdkqhl7odedylxty.public.blob.vercel-storage.com/articles/1-blog-4pAyc5DwuZ5sm013niacFouxoyyULJ.png',
+    url: 'https://tdkqhl7odedylxty.public.blob.vercel-storage.com/articles/1-blog-naSg0XJOHxuSjidr3g3gs5xAaeIZw0.webp',
     alt: 'Harrpy - Connecting Brands and Creators',
     caption: 'Harrpy is the fastest way for brands and creators to collaborate locally'
   },

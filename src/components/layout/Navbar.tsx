@@ -50,7 +50,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView, onOpenW
           >
             <div className="h-12 md:h-16 w-auto mr-0.5 md:mr-1">
               <img 
-                src="https://tdkqhl7odedylxty.public.blob.vercel-storage.com/harrpy-logo-rI7LZcaL4a4CIdfw48Eq3jYXenBi2d.png" 
+                src="https://tdkqhl7odedylxty.public.blob.vercel-storage.com/website/harrpy-logo-IGmUpxKDo70m3qKI37igR2ZtKxwYqP.webp" 
                 alt="Harrpy Logo" 
                 className="h-full w-auto"
                 loading="eager"
