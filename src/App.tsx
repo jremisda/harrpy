@@ -4,7 +4,6 @@ import Navbar from './components/layout/Navbar';
 import Hero from './components/layout/Hero';
 import MainContent from './components/layout/MainContent';
 import NewsContent from './components/layout/NewsContent';
-import CursorTrail from './components/common/CursorTrail';
 import WaitlistPopup from './components/common/WaitlistPopup';
 import GlassyLoader from './components/common/GlassyLoader';
 import './styles/animations.css';
@@ -72,13 +71,6 @@ const ArticlePage: React.FC = () => {
         setScrolled(true);
       } else {
         setScrolled(false);
-      }
-      
-      // Apply parallax effect to the image
-      const imageElement = document.querySelector('.article-hero-image');
-      if (imageElement) {
-        const yPos = scrollTop * 0.2;
-        imageElement.setAttribute('style', `transform: translate3d(0, ${yPos}px, 0)`);
       }
     };
     
@@ -247,16 +239,16 @@ const ArticlePage: React.FC = () => {
           </div>
           
           {/* Featured image */}
-          <div className="mb-10 rounded-[8px] overflow-hidden shadow-lg relative">
-            <div className="relative overflow-hidden" style={{ maxHeight: '500px' }}>
+          <div className="mb-10">
+            <div className="relative overflow-hidden aspect-[16/9]">
               <img 
                 src={article.image.url} 
                 alt={article.image.alt} 
-                className="w-full h-auto max-h-[500px] object-cover article-hero-image transition-transform duration-100 ease-out will-change-transform"
+                className="w-full h-full object-contain article-hero-image"
               />
             </div>
             {article.image.caption && (
-              <p className="text-sm text-gray-600 italic mt-2 px-4 py-2">{article.image.caption}</p>
+              <p className="text-sm text-gray-600 italic mt-2">{article.image.caption}</p>
             )}
           </div>
           
@@ -376,7 +368,7 @@ const ArticlePage: React.FC = () => {
             <h2 className="text-2xl font-bold mb-8">Related Articles</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {relatedArticles.map(article => (
-                <div key={article.id} className="bg-white rounded-lg overflow-hidden shadow-lg hover-lift transition-all duration-300">
+                <Link key={article.id} to={`/articles/${article.slug}`} className="bg-white rounded-lg overflow-hidden shadow-lg hover-lift transition-all duration-300 block group">
                   <div className="h-48 relative">
                     <img 
                       src={article.image.url} 
@@ -387,7 +379,6 @@ const ArticlePage: React.FC = () => {
                       {article.category.name}
                     </div>
                   </div>
-                  
                   <div className="p-5">
                     <div className="flex items-center space-x-2 mb-2">
                       <p className="text-sm text-gray-500">{new Date(article.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
@@ -398,11 +389,12 @@ const ArticlePage: React.FC = () => {
                     <Link 
                       to={`/articles/${article.slug}`} 
                       className="mt-1 inline-block text-sm font-medium text-black hover:underline transition-all duration-300"
+                      onClick={e => e.stopPropagation()}
                     >
                       Read Article →
                     </Link>
                   </div>
-                </div>
+                </Link>
               ))}
             </div>
           </div>
@@ -415,7 +407,7 @@ const ArticlePage: React.FC = () => {
         <div className="flex flex-col md:flex-row justify-between items-center pt-0 relative z-10">
           <div className="flex items-center mb-4 md:mb-0">
             <img 
-              src="/images/harrpy-logo.png" 
+              src="https://tdkqhl7odedylxty.public.blob.vercel-storage.com/harrpy-logo-rI7LZcaL4a4CIdfw48Eq3jYXenBi2d.png" 
               alt="Harrpy Logo" 
               className="h-10 w-auto mr-2"
             />
@@ -607,9 +599,6 @@ function App({ analyticsOptIn, onAnalyticsOptInChange }: AppProps) {
     <div className={`min-h-screen flex flex-col bg-[#FFF5E9] font-sans overflow-x-hidden ${fontsLoaded ? 'fonts-loaded' : 'fonts-loading'} ${pageLoading ? 'animations-paused' : 'animations-enabled'}`}>
       {/* Loading animation */}
       <GlassyLoader isLoading={pageLoading} />
-      
-      {/* Custom cursor with swirl trail effect */}
-      <CursorTrail />
       
       {/* Cookie Banner */}
       {showCookieBanner && (

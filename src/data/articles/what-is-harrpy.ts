@@ -78,9 +78,9 @@ const article: Article = {
   slug: 'what-is-harrpy',
   summary: 'Meet Harrpy: the fast, verified platform where local creators and brands collaborate instantly. No ghosting. No middlemen. Just content.',
   content,
-  publishedAt: new Date().toISOString(),
+  publishedAt: '2025-03-15T10:00:00Z',
   image: {
-    url: '/images/articles/what-is-harrpy/hero.jpg',
+    url: 'https://tdkqhl7odedylxty.public.blob.vercel-storage.com/articles/1-blog-4pAyc5DwuZ5sm013niacFouxoyyULJ.png',
     alt: 'Harrpy - Connecting Brands and Creators',
     caption: 'Harrpy is the fastest way for brands and creators to collaborate locally'
   },

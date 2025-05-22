@@ -103,7 +103,7 @@ const PrivacyPolicy: React.FC = () => {
         <div className="flex flex-col md:flex-row justify-between items-center pt-0 relative z-10">
           <div className="flex items-center mb-4 md:mb-0">
             <img 
-              src="/images/harrpy-logo.png" 
+              src="https://tdkqhl7odedylxty.public.blob.vercel-storage.com/harrpy-logo-rI7LZcaL4a4CIdfw48Eq3jYXenBi2d.png" 
               alt="Harrpy Logo" 
               className="h-10 w-auto mr-2"
               loading="eager"

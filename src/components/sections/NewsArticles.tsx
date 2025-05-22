@@ -386,7 +386,7 @@ const NewsArticles: React.FC<NewsArticlesProps> = ({
   const bottomPadding = hasMore ? "pb-8" : "pb-12";
 
   return (
-    <div className={`bg-[#FFF5E9] px-6 md:px-12 lg:px-24 pt-12 ${bottomPadding}`} ref={containerRef}>
+    <div className={`bg-[#FFF5E9] px-6 md:px-12 lg:px-24 pt-4 ${bottomPadding}`} ref={containerRef}>
       {/* Remove the heading and category filters as they're now in the NewsCategories component */}
       
       {/* Content with transition */}
@@ -407,50 +407,58 @@ const NewsArticles: React.FC<NewsArticlesProps> = ({
         ) : (
           <>
             {firstArticle && (
-              <div className={`grid grid-cols-1 md:grid-cols-12 gap-8 mb-16`}>
+              <div className={`grid grid-cols-1 md:grid-cols-12 gap-4 mb-8`}>
                 {/* First article - large feature */}
                 <div 
                   data-article-id={firstArticle.id}
-                  className={`news-grid-item md:col-span-7 lg:col-span-8 bg-white rounded-lg overflow-hidden shadow-lg hover-lift transition-all duration-300 delay-0 ${
+                  className={`news-grid-item md:col-span-7 lg:col-span-8 transition-all duration-300 delay-0 ${
                     isVisible(firstArticle.id) ? 'visible' : ''
                   }`}
+                  style={{ backgroundColor: '#FDB35B', border: 'none', borderRadius: '0.5rem', overflow: 'hidden' }}
                 >
-                  <div className="h-60 md:h-80 relative">
-                    <OptimizedImage 
-                      src={firstArticle.image.url} 
-                      alt={firstArticle.image.alt}
-                      placeholderColor="#f4e9db"
-                    />
-                    {firstArticle.featured && (
-                      <div className="absolute top-4 right-4 px-3 py-1 bg-black/80 text-white rounded-md text-sm font-medium">
-                        Featured
+                  <Link to={`/articles/${firstArticle.slug}`} className="block h-full">
+                    <div className="h-60 md:h-80 relative" style={{ backgroundColor: '#FDB35B' }}>
+                      <OptimizedImage 
+                        src={firstArticle.image.url} 
+                        alt={firstArticle.image.alt}
+                        placeholderColor="#f4e9db"
+                      />
+                      {firstArticle.featured && (
+                        <div className="absolute top-4 right-4 px-3 py-1 text-black rounded-md text-sm font-medium" style={{ backgroundColor: '#64CBED' }}>
+                          Featured
+                        </div>
+                      )}
+                      <div className="absolute top-4 left-4 px-3 py-1 bg-black/80 text-white rounded-md text-sm">
+                        {firstArticle.category.name}
                       </div>
-                    )}
-                    <div className="absolute top-4 left-4 px-3 py-1 bg-black/80 text-white rounded-md text-sm">
-                      {firstArticle.category.name}
                     </div>
-                  </div>
-                  
-                  <div className="p-6">
-                    <div className="flex items-center space-x-2 mb-2">
-                      <p className="text-sm text-gray-500">{new Date(firstArticle.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
-                      <span className="text-gray-400">•</span>
-                      <p className="text-sm text-gray-500">{firstArticle.readingTime} min read</p>
-                    </div>
-                    <h3 className="font-headline text-2xl font-bold mb-3">{firstArticle.title}</h3>
-                    <p className="text-gray-700 mb-4">{firstArticle.summary}</p>
                     
-                    <Link 
-                      to={`/articles/${firstArticle.slug}`} 
-                      className="mt-2 px-4 py-2 bg-transparent text-black font-medium rounded-[4px] border border-black shadow-[0_0_10px_rgba(0,0,0,0.1)] hover:bg-black/5 inline-block transition-all duration-300 ease-bounce"
-                    >
-                      Read More
-                    </Link>
-                  </div>
+                    <div style={{ backgroundColor: '#FDB35B', width: '100%', borderTop: 'none' }}>
+                      <div className="p-4" style={{ backgroundColor: 'transparent' }}>
+                        <div className="flex items-center space-x-2 mb-2">
+                          <p className="text-sm text-black">{new Date(firstArticle.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+                          <span className="text-black">•</span>
+                          <p className="text-sm text-black">{firstArticle.readingTime} min read</p>
+                        </div>
+                        <h3 className="font-headline text-2xl font-bold mb-3">{firstArticle.title}</h3>
+                        <p className="text-gray-700 mb-4">{firstArticle.summary}</p>
+                        
+                        <div className="mt-2">
+                          <Link 
+                            to={`/articles/${firstArticle.slug}`} 
+                            className="px-4 py-2 bg-transparent text-black font-medium rounded-[4px] border border-black shadow-[0_0_10px_rgba(0,0,0,0.1)] hover:bg-black/5 inline-block transition-all duration-300 ease-bounce"
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            Read More
+                          </Link>
+                        </div>
+                      </div>
+                    </div>
+                  </Link>
                 </div>
                 
                 {/* Second and third articles - smaller */}
-                <div className="md:col-span-5 lg:col-span-4 flex flex-col gap-8">
+                <div className="md:col-span-5 lg:col-span-4 flex flex-col gap-4">
                   {secondaryArticles.map((article, index) => (
                     <div 
                       key={article.id}
@@ -459,34 +467,38 @@ const NewsArticles: React.FC<NewsArticlesProps> = ({
                         isVisible(article.id) ? 'visible' : ''
                       }`}
                     >
-                      <div className="h-52 relative">
-                        <OptimizedImage 
-                          src={article.image.url} 
-                          alt={article.image.alt}
-                          placeholderColor="#f4e9db"
-                        />
-                        <div className="absolute top-4 left-4 px-3 py-1 bg-black/80 text-white rounded-md text-sm">
-                          {article.category.name}
+                      <Link to={`/articles/${article.slug}`} className="block h-full">
+                        <div className="h-72 relative">
+                          <OptimizedImage 
+                            src={article.image.url} 
+                            alt={article.image.alt}
+                            placeholderColor="#f4e9db"
+                          />
+                          <div className="absolute top-4 left-4 px-3 py-1 bg-black/80 text-white rounded-md text-sm">
+                            {article.category.name}
+                          </div>
                         </div>
-                      </div>
-                      
-                      <div className="p-4 flex flex-col h-[calc(100%-13rem)]">
-                        <div className="flex items-center space-x-2 mb-1">
-                          <p className="text-xs text-gray-500">{new Date(article.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
-                          <span className="text-gray-400">•</span>
-                          <p className="text-xs text-gray-500">{article.readingTime} min read</p>
+                        
+                        <div className="p-3 flex flex-col h-[calc(100%-13rem)]" style={{ backgroundColor: '#FDB35B' }}>
+                          <div className="flex items-center space-x-2 mb-1">
+                            <p className="text-xs text-black">{new Date(article.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+                            <span className="text-black">•</span>
+                            <p className="text-xs text-black">{article.readingTime} min read</p>
+                          </div>
+                          <h3 className="font-headline text-lg font-bold mb-2">{article.title}</h3>
+                          <p className="text-gray-700 mb-3 line-clamp-2">{article.summary}</p>
+                          
+                          <div className="mt-auto">
+                            <Link 
+                              to={`/articles/${article.slug}`} 
+                              className="mt-2 px-4 py-2 bg-transparent text-black font-medium rounded-[4px] border border-black shadow-[0_0_10px_rgba(0,0,0,0.1)] hover:bg-black/5 inline-block transition-all duration-300 ease-bounce"
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              Read More
+                            </Link>
+                          </div>
                         </div>
-                        <h3 className="font-headline text-lg font-bold mb-2">{article.title}</h3>
-                        <p className="text-gray-700 mb-3 line-clamp-3">{article.summary}</p>
-                        <div className="mt-auto">
-                          <Link 
-                            to={`/articles/${article.slug}`} 
-                            className="mt-2 px-4 py-2 bg-transparent text-black font-medium rounded-[4px] border border-black shadow-[0_0_10px_rgba(0,0,0,0.1)] hover:bg-black/5 inline-block transition-all duration-300 ease-bounce"
-                          >
-                            Read More
-                          </Link>
-                        </div>
-                      </div>
+                      </Link>
                     </div>
                   ))}
                 </div>
@@ -495,9 +507,9 @@ const NewsArticles: React.FC<NewsArticlesProps> = ({
             
             {/* Grid of smaller articles */}
             {filteredOlderArticles.length > 0 && (
-              <div className="mt-12">
-                <h3 className="text-2xl font-bold mb-8 animate-in">Latest Articles</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              <div className="mt-6">
+                <h3 className="text-2xl font-bold mb-4 animate-in">Latest Articles</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {filteredOlderArticles.map((article, index) => (
                     <div 
                       key={article.id}
@@ -506,32 +518,36 @@ const NewsArticles: React.FC<NewsArticlesProps> = ({
                         isVisible(article.id) ? 'visible' : ''
                       }`}
                     >
-                      <div className="h-48 relative">
-                        <OptimizedImage 
-                          src={article.image.url} 
-                          alt={article.image.alt}
-                          placeholderColor="#f4e9db"
-                        />
-                        <div className="absolute top-4 left-4 px-3 py-1 bg-black/80 text-white rounded-md text-sm">
-                          {article.category.name}
+                      <Link to={`/articles/${article.slug}`} className="block h-full">
+                        <div className="h-48 relative">
+                          <OptimizedImage 
+                            src={article.image.url} 
+                            alt={article.image.alt}
+                            placeholderColor="#f4e9db"
+                          />
+                          <div className="absolute top-4 left-4 px-3 py-1 bg-black/80 text-white rounded-md text-sm">
+                            {article.category.name}
+                          </div>
                         </div>
-                      </div>
-                      
-                      <div className="p-5">
-                        <div className="flex items-center space-x-2 mb-2">
-                          <p className="text-sm text-gray-500">{new Date(article.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
-                          <span className="text-gray-400">•</span>
-                          <p className="text-sm text-gray-500">{article.readingTime} min read</p>
+                        
+                        <div className="p-3" style={{ backgroundColor: '#FDB35B' }}>
+                          <div className="flex items-center space-x-2 mb-2">
+                            <p className="text-sm text-black">{new Date(article.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+                            <span className="text-black">•</span>
+                            <p className="text-sm text-black">{article.readingTime} min read</p>
+                          </div>
+                          <h3 className="font-headline text-xl font-bold mb-3">{article.title}</h3>
+                          <p className="text-gray-700 mb-3 line-clamp-2">{article.summary}</p>
+                          
+                          <Link 
+                            to={`/articles/${article.slug}`} 
+                            className="mt-1 inline-block text-sm font-medium text-black hover:underline transition-all duration-300"
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            Read Article →
+                          </Link>
                         </div>
-                        <h3 className="font-headline text-xl font-bold mb-3">{article.title}</h3>
-                        <p className="text-gray-700 mb-3 line-clamp-2">{article.summary}</p>
-                        <Link 
-                          to={`/articles/${article.slug}`} 
-                          className="mt-1 inline-block text-sm font-medium text-black hover:underline transition-all duration-300"
-                        >
-                          Read Article →
-                        </Link>
-                      </div>
+                      </Link>
                     </div>
                   ))}
                 </div>

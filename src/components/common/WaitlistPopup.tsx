@@ -535,10 +535,11 @@ const WaitlistPopup: React.FC<WaitlistPopupProps> = ({
         </div>
         
         {/* Footer with copyright */}
-        <div className="px-8 py-4 border-t border-black/10 mt-auto flex-shrink-0">
+        <div className="px-8 py-4 mt-auto flex-shrink-0">
+          <div className="h-0.5 w-full bg-[#121212] mb-6"></div>
           <div className="flex items-center justify-center gap-2">
             <img 
-              src="/images/harrpy-logo.png" 
+              src="https://tdkqhl7odedylxty.public.blob.vercel-storage.com/harrpy-logo-rI7LZcaL4a4CIdfw48Eq3jYXenBi2d.png" 
               alt="Harrpy Logo" 
               className="h-5 w-auto mr-1.5"
             />

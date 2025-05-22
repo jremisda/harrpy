@@ -72,9 +72,9 @@ const article: Article = {
   slug: 'how-to-get-free-clothes-hotel-stays-creator',
   summary: 'Learn how content creators can secure free clothes and hotel stays by offering genuine value to brands and hotels.',
   content,
-  publishedAt: new Date().toISOString(),
+  publishedAt: '2025-03-20T10:00:00Z',
   image: {
-    url: '/images/articles/how-to-get-free-clothes-hotel-stays-creator/hero.jpg',
+    url: 'https://tdkqhl7odedylxty.public.blob.vercel-storage.com/articles/2-blog-PSB0RwPyqTVXN5Gw211SF3REYZot8C.png',
     alt: 'Content Creator with Free Clothes and Hotel Stay',
     caption: 'Learn how to secure legitimate brand collaborations as a content creator'
   },
