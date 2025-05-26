@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import OptimizedImage from '../common/OptimizedImage';
 import { articleService } from '../../services/articleService';
-import { ArticleCategory, ArticleFilters, ArticleListItem } from '../../types';
+import { ArticleCategory, ArticleFilters, ArticleListItem, Article } from '../../types';
 
 interface NewsArticlesProps {
   categories?: ArticleCategory[];
@@ -33,6 +33,7 @@ const NewsArticles: React.FC<NewsArticlesProps> = ({
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(false);
   const [totalArticles, setTotalArticles] = useState(0);
+  const [featuredFullArticle, setFeaturedFullArticle] = useState<Article | null>(null);
 
   // Update internal state when external props change
   useEffect(() => {
@@ -339,45 +340,21 @@ const NewsArticles: React.FC<NewsArticlesProps> = ({
     }
   };
 
-  // We separate recent (first 3) and older articles
-  const recentArticles = articles.slice(0, 3);
-  const olderArticles = articles.slice(3);
+  // Combine all articles (featured + regular), remove duplicates, and sort by publishedAt descending
+  const allArticlesMap = new Map<string, ArticleListItem>();
+  [...featuredArticles, ...articles].forEach(article => {
+    allArticlesMap.set(article.id, article);
+  });
+  const allArticlesSorted = Array.from(allArticlesMap.values()).sort(
+    (a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
+  );
 
-  // Add a featured flag to the first article if we have featured articles
-  const firstArticle = featuredArticles.length > 0 
-    ? featuredArticles[0] 
-    : recentArticles.length > 0 ? recentArticles[0] : null;
-    
-  // Second and third articles
-  const secondaryArticles = featuredArticles.length > 1 
-    ? [featuredArticles[1]] 
-    : recentArticles.slice(1, 2);
-  
-  // If we have a second featured article, add the first from recent to secondary
-  if (featuredArticles.length > 1 && recentArticles.length > 0) {
-    secondaryArticles.push(recentArticles[0]);
-  } else if (featuredArticles.length <= 1) {
-    secondaryArticles.push(...recentArticles.slice(1, 3 - secondaryArticles.length));
-  }
-
-  // More robust filtering of duplicate articles
-  // Collect ALL articles that could potentially be duplicated
-  const displayedArticles = [
-    ...(firstArticle ? [firstArticle] : []),
-    ...secondaryArticles,
-    ...featuredArticles  // Include all featured articles to be safe
-  ];
-  
-  // Create a set of all displayed article IDs for efficient lookup
-  const displayedArticleIdSet = new Set(displayedArticles.map(a => a.id));
-  
-  // Filter all regular articles to remove any that are already displayed elsewhere
-  const nonDuplicatedArticles = articles.filter(article => !displayedArticleIdSet.has(article.id));
-  
-  // We need to display potentially DIFFERENT articles in older, not just "3 and after"
-  // Calculate how many articles to display in the main grid section based on what's already shown
-  const articlesToSkip = Math.min(nonDuplicatedArticles.length, 3);
-  const filteredOlderArticles = nonDuplicatedArticles.slice(articlesToSkip);
+  // The newest article is the featured (biggest) card
+  const firstArticle = allArticlesSorted[0] || null;
+  // The next two are secondary
+  const secondaryArticles = allArticlesSorted.slice(1, 3);
+  // The rest go into the grid
+  const filteredOlderArticles = allArticlesSorted.slice(3);
 
   // Check if an article is visible for animation
   const isVisible = (id: string) => visibleItems.has(id);
@@ -385,39 +362,48 @@ const NewsArticles: React.FC<NewsArticlesProps> = ({
   // For articles with "load more" button, we need less bottom padding
   const bottomPadding = hasMore ? "pb-8" : "pb-12";
 
+  // Fetch the full article for the featured card when it changes
+  useEffect(() => {
+    if (firstArticle) {
+      articleService.getArticleBySlug(firstArticle.slug).then(setFeaturedFullArticle);
+    } else {
+      setFeaturedFullArticle(null);
+    }
+  }, [firstArticle]);
+
+  // Utility to get a longer preview for the featured article
+  const getFeaturedPreview = () => {
+    if (featuredFullArticle && featuredFullArticle.content) {
+      const plain = featuredFullArticle.content.replace(/[#*_`>-]/g, '').replace(/\n+/g, ' ');
+      return plain.split(' ').slice(0, 80).join(' ') + '...';
+    }
+    if (firstArticle) {
+      return firstArticle.summary + (firstArticle.summary.length < 300 ? ' ' + firstArticle.summary : '');
+    }
+    return '';
+  };
+
   return (
-    <div className={`bg-[#FFF5E9] px-6 md:px-12 lg:px-24 pt-4 ${bottomPadding}`} ref={containerRef}>
-      {/* Remove the heading and category filters as they're now in the NewsCategories component */}
-      
-      {/* Content with transition */}
-      <div 
-        className={`news-grid page-transition-container transition-opacity duration-500 ease-natural-out ${
-          animated ? 'opacity-100' : 'opacity-0'
-        } ${isTransitioning ? 'opacity-50' : 'opacity-100'}`}
-        style={{ 
-          minHeight: '500px',
-          willChange: 'opacity, transform'
-        }}
-        ref={gridRef}
-      >
-        {isLoading && articles.length === 0 ? (
-          <div className="flex items-center justify-center py-20">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-black"></div>
+    <div className={`relative ${bottomPadding}`}>
+      <div className="mx-auto px-6 md:px-12 lg:px-24">
+        {isLoading ? (
+          <div className="flex justify-center items-center min-h-[400px]">
+            <div className="w-8 h-8 border-t-2 border-b-2 border-black rounded-full animate-spin"></div>
           </div>
         ) : (
           <>
             {firstArticle && (
-              <div className={`grid grid-cols-1 md:grid-cols-12 gap-4 mb-8`}>
-                {/* First article - large feature */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12 items-stretch">
+                {/* Left: Featured Article */}
                 <div 
                   data-article-id={firstArticle.id}
-                  className={`news-grid-item md:col-span-7 lg:col-span-8 transition-all duration-300 delay-0 ${
+                  className={`news-grid-item md:col-span-2 flex flex-col h-full transition-all duration-300 delay-0 ${
                     isVisible(firstArticle.id) ? 'visible' : ''
                   }`}
-                  style={{ backgroundColor: '#FDB35B', border: 'none', borderRadius: '0.5rem', overflow: 'hidden' }}
+                  style={{ backgroundColor: '#FDB35B', border: 'none', borderRadius: '0.5rem', overflow: 'hidden', minHeight: '32rem' }}
                 >
                   <Link to={`/articles/${firstArticle.slug}`} className="block h-full">
-                    <div className="h-60 md:h-80 relative" style={{ backgroundColor: '#FDB35B' }}>
+                    <div className="h-72 md:h-[22rem] lg:h-[24rem] xl:h-[28rem] relative" style={{ backgroundColor: '#FDB35B' }}>
                       <OptimizedImage 
                         src={firstArticle.image.url} 
                         alt={firstArticle.image.alt}
@@ -432,21 +418,21 @@ const NewsArticles: React.FC<NewsArticlesProps> = ({
                         {firstArticle.category.name}
                       </div>
                     </div>
-                    
                     <div style={{ backgroundColor: '#FDB35B', width: '100%', borderTop: 'none' }}>
-                      <div className="p-4" style={{ backgroundColor: 'transparent' }}>
-                        <div className="flex items-center space-x-2 mb-2">
-                          <p className="text-sm text-black">{new Date(firstArticle.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
-                          <span className="text-black">•</span>
-                          <p className="text-sm text-black">{firstArticle.readingTime} min read</p>
+                      <div className="p-8 flex flex-col justify-between h-full" style={{ backgroundColor: 'transparent', minHeight: '16rem' }}>
+                        <div>
+                          <div className="flex items-center space-x-2 mb-3">
+                            <p className="text-sm text-black">{new Date(firstArticle.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+                            <span className="text-black">•</span>
+                            <p className="text-sm text-black">{firstArticle.readingTime} min read</p>
+                          </div>
+                          <h3 className="font-headline text-3xl font-bold mb-4">{firstArticle.title}</h3>
+                          <p className="text-gray-700 mb-6 text-lg">{getFeaturedPreview()}</p>
                         </div>
-                        <h3 className="font-headline text-2xl font-bold mb-3">{firstArticle.title}</h3>
-                        <p className="text-gray-700 mb-4">{firstArticle.summary}</p>
-                        
-                        <div className="mt-2">
+                        <div className="mt-4">
                           <Link 
                             to={`/articles/${firstArticle.slug}`} 
-                            className="px-4 py-2 bg-transparent text-black font-medium rounded-[4px] border border-black shadow-[0_0_10px_rgba(0,0,0,0.1)] hover:bg-black/5 inline-block transition-all duration-300 ease-bounce"
+                            className="px-6 py-3 bg-transparent text-black font-medium rounded-[4px] border border-black shadow-[0_0_10px_rgba(0,0,0,0.1)] hover:bg-black/5 inline-block transition-all duration-300 ease-bounce"
                             onClick={(e) => e.stopPropagation()}
                           >
                             Read More
@@ -456,19 +442,19 @@ const NewsArticles: React.FC<NewsArticlesProps> = ({
                     </div>
                   </Link>
                 </div>
-                
-                {/* Second and third articles - smaller */}
-                <div className="md:col-span-5 lg:col-span-4 flex flex-col gap-4">
+                {/* Right: Two Secondary Articles stacked */}
+                <div className="flex flex-col gap-8 h-full justify-between">
                   {secondaryArticles.map((article, index) => (
                     <div 
                       key={article.id}
                       data-article-id={article.id}
-                      className={`news-grid-item bg-white rounded-lg overflow-hidden shadow-lg hover-lift flex-1 delay-${index + 1} ${
+                      className={`news-grid-item bg-white rounded-lg overflow-hidden shadow-lg hover-lift flex-1 flex flex-col transition-all duration-300 delay-${index + 1} ${
                         isVisible(article.id) ? 'visible' : ''
                       }`}
+                      style={{ minHeight: '15rem' }}
                     >
                       <Link to={`/articles/${article.slug}`} className="block h-full">
-                        <div className="h-72 relative">
+                        <div className="h-48 md:h-40 lg:h-48 relative">
                           <OptimizedImage 
                             src={article.image.url} 
                             alt={article.image.alt}
@@ -478,16 +464,14 @@ const NewsArticles: React.FC<NewsArticlesProps> = ({
                             {article.category.name}
                           </div>
                         </div>
-                        
-                        <div className="p-3 flex flex-col h-[calc(100%-13rem)]" style={{ backgroundColor: '#FDB35B' }}>
-                          <div className="flex items-center space-x-2 mb-1">
+                        <div className="p-6 flex flex-col h-full" style={{ backgroundColor: '#FDB35B' }}>
+                          <div className="flex items-center space-x-2 mb-2">
                             <p className="text-xs text-black">{new Date(article.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
                             <span className="text-black">•</span>
                             <p className="text-xs text-black">{article.readingTime} min read</p>
                           </div>
-                          <h3 className="font-headline text-lg font-bold mb-2">{article.title}</h3>
-                          <p className="text-gray-700 mb-3 line-clamp-2">{article.summary}</p>
-                          
+                          <h3 className="font-headline text-xl font-bold mb-3">{article.title}</h3>
+                          <p className="text-gray-700 mb-4 line-clamp-2">{article.summary}</p>
                           <div className="mt-auto">
                             <Link 
                               to={`/articles/${article.slug}`} 
@@ -507,9 +491,9 @@ const NewsArticles: React.FC<NewsArticlesProps> = ({
             
             {/* Grid of smaller articles */}
             {filteredOlderArticles.length > 0 && (
-              <div className="mt-6">
-                <h3 className="text-2xl font-bold mb-4 animate-in">Latest Articles</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="mt-12">
+                <h3 className="text-2xl font-bold mb-6 animate-in">Latest Articles</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {filteredOlderArticles.map((article, index) => (
                     <div 
                       key={article.id}
@@ -519,7 +503,7 @@ const NewsArticles: React.FC<NewsArticlesProps> = ({
                       }`}
                     >
                       <Link to={`/articles/${article.slug}`} className="block h-full">
-                        <div className="h-48 relative">
+                        <div className="h-56 relative">
                           <OptimizedImage 
                             src={article.image.url} 
                             alt={article.image.alt}
@@ -530,14 +514,14 @@ const NewsArticles: React.FC<NewsArticlesProps> = ({
                           </div>
                         </div>
                         
-                        <div className="p-3" style={{ backgroundColor: '#FDB35B' }}>
+                        <div className="p-4" style={{ backgroundColor: '#FDB35B' }}>
                           <div className="flex items-center space-x-2 mb-2">
                             <p className="text-sm text-black">{new Date(article.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
                             <span className="text-black">•</span>
                             <p className="text-sm text-black">{article.readingTime} min read</p>
                           </div>
                           <h3 className="font-headline text-xl font-bold mb-3">{article.title}</h3>
-                          <p className="text-gray-700 mb-3 line-clamp-2">{article.summary}</p>
+                          <p className="text-gray-700 mb-4 line-clamp-2">{article.summary}</p>
                           
                           <Link 
                             to={`/articles/${article.slug}`} 

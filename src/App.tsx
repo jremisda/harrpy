@@ -21,6 +21,7 @@ import TermsOfUse from './components/pages/TermsOfUse';
 import CookiePolicy from './components/pages/CookiePolicy';
 import CookieBanner from './components/common/CookieBanner';
 import CookieSettingsModal from './components/common/CookieSettingsModal';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 
 // Font preloading helper - simplified approach
 const preloadFonts = () => {
@@ -664,6 +665,7 @@ function App({ analyticsOptIn, onAnalyticsOptInChange }: AppProps) {
           </div>
         )}
       </div>
+      <SpeedInsights />
     </div>
   );
 }

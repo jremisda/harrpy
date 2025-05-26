@@ -19,7 +19,7 @@ const SEO: React.FC<SEOProps> = ({
   title = 'Harrpy | Swipe. Match. Collab',
   description = 'Connect with verified creators and local businesses through swipe-to-match collabs. Trusted, fast, and BS-free. Join the waitlist now.',
   canonical,
-  ogImage = 'https://tdkqhl7odedylxty.public.blob.vercel-storage.com/website/harrpy-logo-IGmUpxKDo70m3qKI37igR2ZtKxwYqP.webp',
+  ogImage = 'https://tdkqhl7odedylxty.public.blob.vercel-storage.com/website/share-IMG-min-CnfSmBymenr81SqKFLWtObTyw8Zp3j.webp',
   type = 'website',
   publishedAt,
   modifiedAt,
