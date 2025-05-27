@@ -18,7 +18,11 @@
     "update-sitemap": "npm run generate-sitemap && npm run ping-search-engines",
     "optimize-images": "node scripts/optimize-images.js",
     "setup:upload-dirs": "node scripts/setup-upload-dirs.js",
-    "test:blob": "node scripts/test-blob.js"
+    "test:blob": "node scripts/test-blob.js",
+    "analyze-performance": "node scripts/performance-monitor.js",
+    "test-performance": "node scripts/performance-test.js",
+    "build:analyze": "npm run build && npm run analyze-performance",
+    "validate-optimizations": "npm run test-performance"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.0.0",
@@ -58,6 +62,7 @@
     "postcss": "^8.4.35",
     "sharp": "^0.34.1",
     "tailwindcss": "^3.4.1",
+    "terser": "^5.39.2",
     "ts-jest": "^29.1.2",
     "ts-node": "^10.9.2",
     "typescript": "^5.5.3",

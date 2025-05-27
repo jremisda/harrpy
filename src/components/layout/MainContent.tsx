@@ -30,36 +30,38 @@ export const MainContent: React.FC<MainContentProps> = ({ onEmailSubmit, onOpenW
       
       <HeroCard onEmailSubmit={onEmailSubmit} onOpenWaitlist={onOpenWaitlist} />
       
-      <section id="early-access">
+      <section id="early-access" className="mt-2 sm:mt-0">
         <EarlyAccessBenefits />
       </section>
       
-      <section id="mission">
+      <section id="mission" className="mt-2 sm:mt-0">
         <MissionStatement />
       </section>
 
       {/* Footer */}
-      <footer className="w-full px-6 md:px-12 lg:px-24 py-8 mt-4">
-        <div className="h-0.5 w-full bg-[#121212] mb-6"></div>
+      <footer className="w-full px-4 sm:px-6 md:px-12 lg:px-24 py-4 sm:py-8 mt-2 sm:mt-4">
+        <div className="h-0.5 w-full bg-[#121212] mb-3 sm:mb-6"></div>
         <div className="flex flex-col md:flex-row justify-between items-center pt-0 relative z-10">
-          <div className="flex items-center mb-4 md:mb-0">
+          <div className="flex items-center mb-3 md:mb-0">
             <img 
               src="https://tdkqhl7odedylxty.public.blob.vercel-storage.com/website/harrpy-logo-IGmUpxKDo70m3qKI37igR2ZtKxwYqP.webp" 
               alt="Harrpy Logo" 
-              className="h-10 w-auto mr-2"
+              className="h-8 sm:h-10 w-auto mr-2"
               loading="eager"
             />
             <p className="text-black font-medium">Harrpy</p>
           </div>
-          <div className="text-sm text-black/60 mb-4 md:mb-0 flex flex-col items-center gap-2">
+          <div className="text-xs sm:text-sm text-black/60 mb-4 md:mb-0 flex flex-col items-center gap-2">
             <span>© {new Date().getFullYear()} Harrpy. All rights reserved.</span>
-            <div className="flex gap-4">
+            <div className="flex flex-wrap justify-center gap-3 sm:gap-4">
               <a href="/privacy" className="text-black/40 hover:text-black underline transition-colors duration-200">Privacy Policy</a>
               <a href="/terms" className="text-black/40 hover:text-black underline transition-colors duration-200">Terms of Use</a>
               <a href="/cookies" className="text-black/40 hover:text-black underline transition-colors duration-200">Cookie Policy</a>
             </div>
           </div>
-          <SocialMediaIcons />
+          <div className="mb-2 md:mb-0">
+            <SocialMediaIcons />
+          </div>
         </div>
       </footer>
     </div>

@@ -6,12 +6,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
-    <link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700,900,300&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://api.fontshare.com" crossorigin>
+    
+    <!-- Preload critical fonts -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700,900,300&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    
+    <!-- Fallback for non-JS users -->
+    <noscript>
+      <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+      <link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700,900,300&display=swap" rel="stylesheet">
+    </noscript>
     
     <!-- Preload critical images -->
     <link rel="preload" as="image" href="https://tdkqhl7odedylxty.public.blob.vercel-storage.com/website/harrpy-logo-IGmUpxKDo70m3qKI37igR2ZtKxwYqP.webp" fetchpriority="high">
     <link rel="preload" as="image" href="https://tdkqhl7odedylxty.public.blob.vercel-storage.com/website/hero-background-jNdT5rAkZJuFIayFPP6AxGUVNyiNqv.webp" fetchpriority="high">
+    
+    <!-- DNS prefetch for external domains -->
+    <link rel="dns-prefetch" href="//tdkqhl7odedylxty.public.blob.vercel-storage.com">
+    <link rel="dns-prefetch" href="//www.googletagmanager.com">
+    <link rel="dns-prefetch" href="//vitals.vercel-insights.com">
     
     <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
     <meta name="description" content="Harrpy is the creator collaboration platform and influencer collaboration app for brand deals. Hire influencers for campaigns or swipe to match with creators—fast, direct, and verified." />
@@ -49,6 +63,26 @@
       }
       window.onload = function() {
         window.scrollTo(0, 0);
+      }
+      
+      // Optimize font loading
+      if ('fonts' in document) {
+        document.fonts.ready.then(function() {
+          document.documentElement.classList.add('fonts-loaded');
+        });
+      }
+      
+      // Register service worker for caching
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function() {
+          navigator.serviceWorker.register('/sw.js')
+            .then(function(registration) {
+              console.log('SW registered: ', registration);
+            })
+            .catch(function(registrationError) {
+              console.log('SW registration failed: ', registrationError);
+            });
+        });
       }
     </script>
     <title>Harrpy | Swipe. Match. Collab</title>

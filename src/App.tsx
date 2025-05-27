@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, Suspense, lazy } from 'react';
 import { Routes, Route, useNavigate, useLocation, Link, Navigate } from 'react-router-dom';
 import Navbar from './components/layout/Navbar';
 import Hero from './components/layout/Hero';
 import MainContent from './components/layout/MainContent';
-import NewsContent from './components/layout/NewsContent';
 import WaitlistPopup from './components/common/WaitlistPopup';
 import GlassyLoader from './components/common/GlassyLoader';
 import './styles/animations.css';
@@ -12,16 +11,26 @@ import * as waitlistService from './services/waitlistService';
 import { Article, ArticleListItem, UserType, CreatorFormData, BusinessFormData } from './types';
 import SEO from './components/common/SEO';
 import { useLoading } from './context/LoadingContext';
-import NotFoundPage from './components/pages/NotFoundPage';
 import Toast from './components/common/Toast';
 import SocialMediaIcons from './components/common/SocialMediaIcons';
 import StructuredData from './components/common/StructuredData';
-import PrivacyPolicy from './components/pages/PrivacyPolicy';
-import TermsOfUse from './components/pages/TermsOfUse';
-import CookiePolicy from './components/pages/CookiePolicy';
 import CookieBanner from './components/common/CookieBanner';
 import CookieSettingsModal from './components/common/CookieSettingsModal';
 import { SpeedInsights } from '@vercel/speed-insights/react';
+
+// Lazy load non-critical components
+const NewsContent = lazy(() => import('./components/layout/NewsContent'));
+const NotFoundPage = lazy(() => import('./components/pages/NotFoundPage'));
+const PrivacyPolicy = lazy(() => import('./components/pages/PrivacyPolicy'));
+const TermsOfUse = lazy(() => import('./components/pages/TermsOfUse'));
+const CookiePolicy = lazy(() => import('./components/pages/CookiePolicy'));
+
+// Loading fallback component
+const LoadingFallback = () => (
+  <div className="flex justify-center items-center py-20">
+    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-black"></div>
+  </div>
+);
 
 // Font preloading helper - simplified approach
 const preloadFonts = () => {
@@ -631,13 +640,33 @@ function App({ analyticsOptIn, onAnalyticsOptInChange }: AppProps) {
               onOpenWaitlist={handleOpenWaitlist}
             /> 
           } />
-          <Route path="/news" element={<NewsContent />} />
+          <Route path="/news" element={
+            <Suspense fallback={<LoadingFallback />}>
+              <NewsContent />
+            </Suspense>
+          } />
           <Route path="/articles/:slug" element={<ArticlePage />} />
           <Route path="/waitlist" element={<WaitlistRedirect onOpenWaitlist={handleOpenWaitlist} />} />
-          <Route path="/privacy" element={<PrivacyPolicy />} />
-          <Route path="/terms" element={<TermsOfUse />} />
-          <Route path="/cookies" element={<CookiePolicy />} />
-          <Route path="*" element={<NotFoundPage />} />
+          <Route path="/privacy" element={
+            <Suspense fallback={<LoadingFallback />}>
+              <PrivacyPolicy />
+            </Suspense>
+          } />
+          <Route path="/terms" element={
+            <Suspense fallback={<LoadingFallback />}>
+              <TermsOfUse />
+            </Suspense>
+          } />
+          <Route path="/cookies" element={
+            <Suspense fallback={<LoadingFallback />}>
+              <CookiePolicy />
+            </Suspense>
+          } />
+          <Route path="*" element={
+            <Suspense fallback={<LoadingFallback />}>
+              <NotFoundPage />
+            </Suspense>
+          } />
         </Routes>
         
         {/* Waitlist Popup - moved to App level */}

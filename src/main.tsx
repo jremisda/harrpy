@@ -12,7 +12,7 @@ import { useEffect, useState } from 'react';
 function AnalyticsOptInWrapper({ enabled }: { enabled: boolean }) {
   if (!enabled) return null;
   return <>
-    <Analytics />
+    <Analytics mode="production" />
     <SpeedInsights />
   </>;
 }
