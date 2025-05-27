@@ -25,8 +25,30 @@
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
+  <url>
+    <loc>https://harrpy.com/articles/how-to-become-nomad-worker-bali</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
   
-  <!-- Waitlist page -->
+  <!-- Legal pages -->
+  <url>
+    <loc>https://harrpy.com/privacy</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  <url>
+    <loc>https://harrpy.com/terms</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  <url>
+    <loc>https://harrpy.com/cookies</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  
+  <!-- Waitlist page (redirects to home but still accessible) -->
   <url>
     <loc>https://harrpy.com/waitlist</loc>
     <changefreq>monthly</changefreq>
