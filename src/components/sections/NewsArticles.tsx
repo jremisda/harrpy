@@ -393,7 +393,7 @@ const NewsArticles: React.FC<NewsArticlesProps> = ({
         ) : (
           <>
             {firstArticle && (
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12 items-stretch">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-6 items-stretch">
                 {/* Left: Featured Article */}
                 <div 
                   data-article-id={firstArticle.id}
@@ -491,8 +491,8 @@ const NewsArticles: React.FC<NewsArticlesProps> = ({
             
             {/* Grid of smaller articles */}
             {filteredOlderArticles.length > 0 && (
-              <div className="mt-12">
-                <h3 className="text-2xl font-bold mb-6 animate-in">Latest Articles</h3>
+              <div className="mt-6">
+                <h3 className="text-2xl font-bold mb-4 animate-in">Latest Articles</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {filteredOlderArticles.map((article, index) => (
                     <div 
@@ -521,15 +521,7 @@ const NewsArticles: React.FC<NewsArticlesProps> = ({
                             <p className="text-sm text-black">{article.readingTime} min read</p>
                           </div>
                           <h3 className="font-headline text-xl font-bold mb-3">{article.title}</h3>
-                          <p className="text-gray-700 mb-4 line-clamp-2">{article.summary}</p>
-                          
-                          <Link 
-                            to={`/articles/${article.slug}`} 
-                            className="mt-1 inline-block text-sm font-medium text-black hover:underline transition-all duration-300"
-                            onClick={(e) => e.stopPropagation()}
-                          >
-                            Read Article →
-                          </Link>
+                          <p className="text-gray-700 line-clamp-2">{article.summary}</p>
                         </div>
                       </Link>
                     </div>

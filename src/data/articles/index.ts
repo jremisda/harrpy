@@ -2,12 +2,14 @@ import { Article } from '../../types';
 import whatIsHarrpy from './what-is-harrpy';
 import howToGetFreeClothesHotelStaysCreator from './how-to-get-free-clothes-hotel-stays-creator';
 import howToBecomeNomadWorkerBali from './how-to-become-nomad-worker-bali';
+import workInBaliLikeAPro from './work-in-bali-like-a-pro';
 
 // Export all articles
 export const articles: Article[] = [
   whatIsHarrpy,
   howToGetFreeClothesHotelStaysCreator,
-  howToBecomeNomadWorkerBali
+  howToBecomeNomadWorkerBali,
+  workInBaliLikeAPro
 ];
 
 // Utility function to calculate reading time from content
